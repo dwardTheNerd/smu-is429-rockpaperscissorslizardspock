@@ -1,0 +1,466 @@
+<div class="main">
+
+    <div class="container">
+    	
+      <div class="row">
+      
+      	<div class="span12">
+			<meta name="google-signin-clientid" content="CLIENT_ID" />
+			<meta name="google-signin-scope" content="https://www.googleapis.com/auth/plus.login" />
+			<meta name="google-signin-requestvisibleactions" content="http://schemas.google.com/AddActivity" />
+			<meta name="google-signin-cookiepolicy" content="single_host_origin" />
+
+
+      		      		
+      	</div> <!-- /span12 -->	
+      	
+  	  </div> <!-- /row -->
+
+      <div class="row">
+      	
+      	<div class="span6">
+      		
+      		<div class="widget stacker">
+					
+				<div class="widget-header">
+					<i class="icon-star"></i>
+					<h3>Player 1</h3>
+				</div> <!-- /widget-header -->
+				
+				<div class="widget-content">
+					
+					<form action="" id="validation-form" class="">
+						<fieldset>
+							<div class="control-group">
+								<label class="control-label" for="validateSelect">Select Bot to play against</label>
+								<div class="controls">
+									<select id="validateSelect" name="validateSelect">
+										<option value="">Select...</option>
+										
+									</select>
+								</div>
+							</div>
+							<br>Code your own bot below.<br>
+							
+							<div class="control-group">
+								<label class="control-label" for="">Bot Name</label>
+								<div class="controls">
+									<textarea class="span4" name="botname" id="botname" rows="1"></textarea>
+								</div>
+								
+								<label class="control-label" for="message">Your Code</label>
+								
+								<div class="controls">
+									<textarea class="span4" name="code" id="code" rows="4"></textarea>
+								</div>
+								<label class="control-label" for="">Language</label>
+								<div class="controls">
+									<select id="language" name="language">
+										<option value="">Select...</option>
+										<option value="JAVA">Java(NOT WORKING)</option>
+										<option value="PYTHON">Python</option>
+										<option value="RUBY">Ruby</option>
+										
+									</select>
+								</div>
+							</div>
+				          
+							<div class="form-action">
+								<!--<button type="submit" class="btn btn-danger btn" id="savebot">Save bot</button>&nbsp;&nbsp;-->
+								
+							</div>
+						</fieldset>
+						
+					</form>
+					
+					<input id="saveBot" type="submit" value="Play" class="btn btn-danger btn">
+				</div> <!-- /widget-content -->
+					
+			</div> <!-- /widget -->
+			
+      	
+	    </div> <!-- /span6 -->
+		<!--
+      	<div class="span6">
+      		
+      		<div class="widget stacker">
+					
+				<div class="widget-header">
+					<i class="icon-star"></i>
+					<h3>Player 1</h3>
+				</div> <!-- /widget-header 
+				
+				<div class="widget-content">
+					
+					<form action="/" id="validation-form" class="">
+						<fieldset>
+							<div class="control-group">
+								<label class="control-label" for="validateSelect">Select Bot</label>
+								<div class="controls">
+									<select id="validateSelect" name="validateSelect">
+										<option value="">Select...</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+									</select>
+								</div>
+							</div>
+							Or <br><br>Code your own bot below.<br>
+							<div class="control-group">
+								<br>
+								<label class="control-label" for="message">Your Code</label>
+								<div class="controls">
+									<textarea class="span4" name="code" id="code" rows="4"></textarea>
+								</div>
+							</div>
+				          
+							<div class="form-actions">
+								<button type="submit" class="btn btn-danger btn">Save bot</button>&nbsp;&nbsp;
+								
+							</div>
+						</fieldset>
+					</form>
+					
+					
+				</div> <!-- /widget-content -->
+					
+			<!--</div>  /widget 
+			
+      		
+      		
+      		
+	    </div> /span6 -->
+      	
+      	<div class="span6">
+      		
+      		<div class="widget stacked">
+						
+				<div class="widget-header">
+					<i class="icon-list-alt"></i>
+					<h3>Bot</h3>
+				</div> <!-- /widget-header -->
+				
+				<div class="widget-content" style="height:250px;" id="whoWin">
+					Hi
+				</div> <!-- /widget-content -->
+			
+			</div> <!-- /widget -->
+								
+	      </div> <!-- /span6 -->
+      	
+      </div> <!-- /row -->
+      
+		<div class="widget big-stats-container stacked">
+			
+			<div class="widget-content">
+				
+      		<div id="big_stats" class="cf">
+				<div class="stat">								
+					<h4>Number of Games Played today</h4>
+					<span class="value">12</span>								
+				</div> <!-- .stat -->
+				
+				<div class="stat">								
+					<h4>Name of Games Won</h4>
+					<span class="value">23</span>								
+				</div> <!-- .stat -->
+				
+				<div class="stat">								
+					<h4>Total Number of Bots</h4>
+					<span class="value">2</span>								
+				</div> <!-- .stat -->
+				
+				<div class="stat">								
+					<h4>Total Games Played</h4>
+					<span class="value">13</span>								
+				</div> <!-- .stat -->
+			</div>
+		
+		</div> <!-- /widget-content -->
+		
+	</div> <!-- /widget -->
+      
+      
+      
+		<div class="row">
+      	
+      		<div class="span4">
+      		
+      			<div class="widget stacked widget-table">
+					
+					<div class="widget-header">
+						<span class="icon-list-alt"></span>
+						<h3>Top Referrers</h3>
+					</div> <!-- .widget-header -->
+					
+					<div class="widget-content">
+						<table class="table table-bordered table-striped">
+							
+							<thead><tr>								
+								<th>Referrer</th>
+								<th>Uniques</th>								
+							</tr></thead>
+					
+						<tbody><tr>
+							<td class="description"><a href="http://google.com">http://google.com</a></td>
+							<td class="value"><span>1123</span></td>
+						</tr>
+						<tr>
+							<td class="description"><a href="http://yahoo.com">http://yahoo.com</a></td>
+							<td class="value"><span>927</span></td>
+						</tr>
+						<tr>
+							<td class="description"><a href="http://themeforest.net">http://themeforest.net</a></td>
+							<td class="value"><span>834</span></td>
+						</tr>
+						<tr>
+							<td class="description"><a href="http://codecanyon.net">codecanyon.net</a></td>
+							<td class="value"><span>625</span></td>
+						</tr>
+						<tr>
+							<td class="description"><a href="http://graphicriver.net">http://graphicriver.net</a></td>
+							<td class="value"><span>593</span></td>
+						</tr>
+						
+						<tr>
+							<td class="description"><a href="http://bing.com">http://bing.com</a></td>
+							<td class="value"><span>324</span></td>
+						</tr>
+						
+						
+					</tbody></table>
+						
+					</div> <!-- .widget-content -->
+					
+				</div> <!-- /widget -->	
+      			
+  			</div> <!-- /span4 -->
+  			
+  			
+  			
+  			<div class="span4">
+  				
+  				<div class="widget stacked widget-table">
+					
+					<div class="widget-header">
+						<span class="icon-file"></span>
+						<h3>Most Visited Pages</h3>
+					</div> <!-- .widget-header -->
+					
+					<div class="widget-content">
+						<table class="table table-bordered table-striped">
+							
+							<thead><tr>								
+								<th>Page</th>
+								<th>Visits</th>								
+							</tr></thead>
+					
+						<tbody><tr>
+							<td class="description"><a href="javascript:;">Homepage</a></td>
+							<td class="value"><span>1123</span></td>
+						</tr>
+						<tr>
+							<td class="description"><a href="javascript:;">Portfolio</a></td>
+							<td class="value"><span>927</span></td>
+						</tr>
+						<tr>
+							<td class="description"><a href="javascript:;">Services</a></td>
+							<td class="value"><span>834</span></td>
+						</tr>
+						<tr>
+							<td class="description"><a href="javascript:;">Contact Us</a></td>
+							<td class="value"><span>625</span></td>
+						</tr>
+						<tr>
+							<td class="description"><a href="javascript:;">Testimonials</a></td>
+							<td class="value"><span>593</span></td>
+						</tr>
+						
+						<tr>
+							<td class="description"><a href="javascript:;">Signup</a></td>
+							<td class="value"><span>456</span></td>
+						</tr>
+						
+						
+					</tbody></table>
+						
+					</div> <!-- .widget-content -->
+					
+				</div>
+  				
+  			</div> <!-- /span4 -->
+  			
+  			
+  			
+  			<div class="span4">
+  				
+  				<div class="widget stacked widget-table">
+					
+					<div class="widget-header">
+						<span class="icon-external-link"></span>
+						<h3>Browsers</h3>
+					</div> <!-- .widget-header -->
+					
+					<div class="widget-content">
+						<table class="table table-bordered table-striped">
+							
+							<thead><tr>								
+								<th>Browser</th>
+								<th>Visits</th>								
+							</tr></thead>
+					
+						<tbody><tr>
+							<td class="description">Firefox</td>
+							<td class="value"><span>1123</span></td>
+						</tr>
+						<tr>
+							<td class="description">Chrome</td>
+							<td class="value"><span>927</span></td>
+						</tr>
+						<tr>
+							<td class="description">Internet Explorer</td>
+							<td class="value"><span>834</span></td>
+						</tr>
+						<tr>
+							<td class="description">Safari</td>
+							<td class="value"><span>625</span></td>
+						</tr>
+						<tr>
+							<td class="description">Opera</td>
+							<td class="value"><span>593</span></td>
+						</tr>
+						
+						<tr>
+							<td class="description">Netscape</td>
+							<td class="value"><span>123</span></td>
+						</tr>
+						
+						
+					</tbody></table>
+						
+					</div> <!-- .widget-content -->
+					
+				</div>
+  				
+  			</div> <!-- /span4 -->
+      	
+		</div> <!-- /row -->
+      
+      
+    </div> <!-- /container -->
+    
+</div> <!-- /main -->
+
+
+<script>
+$(function() {
+    console.log( "ready!" );
+});
+</script>
+<script type="text/javascript">
+
+function init() {
+	var callback = function () {
+		getBotList();
+	};
+
+	//var apisToLoad = 1;
+	gapi.client.load('rockpaperscissorslizardspock', 'v1', callback, 'https://smu-is429-group-project.appspot.com/_ah/api');
+
+    document.getElementById('saveBot').onclick = function() {
+            saveBot();
+    }
+
+}
+function saveBot(){
+	document.getElementById('whoWin').innerHTML = "";
+	//Validate the entries
+	var _BotName = document.getElementById('botname').value;
+	var _Code = document.getElementById('code').value;
+	var _AiBotId = document.getElementById('validateSelect').value;
+	var _BotLanguage = document.getElementById('language').value;
+    
+	//Build the Request Object
+	var requestData = {};
+	requestData.playerBotName = _BotName;
+	requestData.playerBotCode = _Code;
+	requestData.aiBotId = _AiBotId;
+	requestData.language = _BotLanguage;
+	
+	//Build the loop Request Object
+	var loopRequestData = {};
+	var _GameID = '';
+	//Api Calling here
+	gapi.client.rockpaperscissorslizardspock.rockPaperScissorsLizardSpock.newGame(requestData).execute(function(resp) {
+		if (!resp.code) {
+			//Just logging to console now, you can do your check here/display message
+			console.log('inside if!resp.cpde');
+			_GameID = resp.gameSession.id;
+			console.log(_GameID);
+			loopRequestData.gameID = _GameID;
+			console.log('Before for loop');
+			for (var i=0;i<8;i++)
+			{
+				nextGame(_GameID);
+				
+			}
+			console.log('outside for loop');
+		}
+		
+		/*
+		console.log(resp);
+		console.log(resp.gameSession.id + ":" + resp.gameSession.roundNo + ":" + resp.gameSession.playerMove+ ":" + resp.gameSession.aiMove+ ":" + resp.gameSession.hasPlayerWon);
+		if(resp.gameSession.hasPlayerWon=1){
+			document.getElementById('whoWin').innerHTML = "You Win Bitch";
+		}else if(resp.gameSession.hasPlayerWon=0){
+			document.getElementById('whoWin').innerHTML = "You Draw Bitch";
+		}else{
+			document.getElementById('whoWin').innerHTML = "You Lose Bitch";
+		} */
+	});
+}
+
+function nextGame(gameID){
+	console.log("inside nextGame function");
+	console.log(gameID);
+	var roundNo = 0; 
+	var requestData = {};
+	requestData.gameID = gameID;
+	console.log(requestData);
+	gapi.client.rockpaperscissorslizardspock.getNextMove(requestData).execute(function(resp) {
+		console.log('getnextmove');
+		console.log(resp);
+		roundNo = resp.gameSession.roundNo;
+	});
+	console.log(roundNo);
+	return roundNo;
+}
+//extra line here
+function getBotList() {
+	console.log("inside list quotes");
+	gapi.client.rockpaperscissorslizardspock.rockPaperScissorsLizardSpock.getBotList().execute(function(resp) {
+		console.log(resp);
+		if (!resp.code) {
+			resp.items = resp.items || [];
+			var result = "<option value=''>Select...</option>";
+			for (var i=0;i<resp.items.length;i++) {
+				console.log("loop");
+				//result = result + resp.items[i].name +"</BR>";
+				result = result+"<option value='"+resp.items[i].id+"'>"+resp.items[i].name + "</option>";
+			}
+			document.getElementById('validateSelect').innerHTML = result;
+		}
+	});
+}
+
+(function() {
+	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	po.src = 'https://apis.google.com/js/plusone.js?onload=onLoadCallback';
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+})();
+
+
+</script>
+<script src="https://apis.google.com/js/client.js?onload=init"></script>

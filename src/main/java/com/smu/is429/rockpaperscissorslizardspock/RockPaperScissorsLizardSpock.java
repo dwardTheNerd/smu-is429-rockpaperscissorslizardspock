@@ -13,7 +13,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.UUID;
 import java.sql.SQLException;
-import java.util.EnumMap;
 import java.util.ArrayList;
 
 @Api(description = "API for RockPaperScissorsLizardSpock game", name = "rockpaperscissorslizardspock", version = "v1")
@@ -21,58 +20,12 @@ public class RockPaperScissorsLizardSpock {
 
   private final int NUMBER_OF_ROUNDS = 10;
 
-  private final EnumMap<Move, EnumMap<Move, Integer>> decisionMatrix;
+  private final Judge judge;
 
   // Constructor
   public RockPaperScissorsLizardSpock() {
 
-    // We need to create the decison matrix used for determining game outcome
-    decisionMatrix = new EnumMap<Move, EnumMap<Move, Integer>>(Move.class);
-
-    // Start off with rock
-    EnumMap<Move, Integer> temp = new EnumMap<Move, Integer>(Move.class);
-    temp.put(Move.ROCK, 0);
-    temp.put(Move.PAPER, -1);
-    temp.put(Move.SCISSORS, 1);
-    temp.put(Move.LIZARD, 1);
-    temp.put(Move.SPOCK, -1);
-    decisionMatrix.put(Move.ROCK, temp);
-
-    // Now we look at paper
-    temp = new EnumMap<Move, Integer>(Move.class);
-    temp.put(Move.ROCK, 1);
-    temp.put(Move.PAPER, 0);
-    temp.put(Move.SCISSORS, -1);
-    temp.put(Move.LIZARD, -1);
-    temp.put(Move.SPOCK, 1);
-    decisionMatrix.put(Move.PAPER, temp);    
-
-    // Now we look at scissors
-    temp = new EnumMap<Move, Integer>(Move.class);
-    temp.put(Move.ROCK, -1);
-    temp.put(Move.PAPER, 1);
-    temp.put(Move.SCISSORS, 0);
-    temp.put(Move.LIZARD, 1);
-    temp.put(Move.SPOCK, -1);
-    decisionMatrix.put(Move.SCISSORS, temp);
-
-    // Now we look at lizard
-    temp = new EnumMap<Move, Integer>(Move.class);
-    temp.put(Move.ROCK, -1);
-    temp.put(Move.PAPER, 1);
-    temp.put(Move.SCISSORS, -1);
-    temp.put(Move.LIZARD, 0);
-    temp.put(Move.SPOCK, 1);
-    decisionMatrix.put(Move.LIZARD, temp);
-
-    // Finally we look at spock
-    temp = new EnumMap<Move, Integer>(Move.class);
-    temp.put(Move.ROCK, 1);
-    temp.put(Move.PAPER, -1);
-    temp.put(Move.SCISSORS, 1);
-    temp.put(Move.LIZARD, -1);
-    temp.put(Move.SPOCK, 0);
-    decisionMatrix.put(Move.SPOCK, temp);    
+    judge = new Judge();    
 
   }
 
@@ -121,15 +74,15 @@ public class RockPaperScissorsLizardSpock {
       // Because we are using enum to specify the valid moves, if player or ai bot method return a value
       // that is not inside our specified values in enum, it will throw an exception.
       // And just in case the move returned is not in uppercase and/or it possess other extra characters, we strip it
-      playerMove = Move.valueOf(playerResponse.getResults()[0].getReceived().trim().toUpperCase().replace("\"", ""));
-      aiMove = Move.valueOf(aiResponse.getResults()[0].getReceived().trim().toUpperCase().replace("\"", ""));
+      playerMove = Move.valueOf(playerResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").replaceAll("\"", "").trim().toUpperCase());
+      aiMove = Move.valueOf(aiResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").replaceAll("\"", "").trim().toUpperCase());
 
       // At this stage, player's bot has been thoroughly validated.
       // Now we can insert player's bot code into database
       int playerBotId = playerBotId = gameDAO.insertBot(playerBotName, playerBot, language);
 
       // Finally we can move on to find out who wins!
-      int hasPlayerWon = hasWon(playerMove, aiMove);
+      int hasPlayerWon = judge.hasWon(playerMove, aiMove);
 
       // Last step, we need to insert the new game session into the database
       // Generate a unique id to associate with the game session
@@ -138,7 +91,7 @@ public class RockPaperScissorsLizardSpock {
 
       response = new Response();
       response.setSuccess(true);
-      response.setGameSession(new GameSession(id, 1, playerMove, aiMove, hasPlayerWon));
+      response.setGameSession(new GameSession(id, 1, playerBotId, aiBot.getId(), playerMove, aiMove, hasPlayerWon));
       return response;
       
     } catch(SQLException ex) {
@@ -250,10 +203,10 @@ public class RockPaperScissorsLizardSpock {
 
       Move playerMove, aiMove = null;
 
-      playerMove = Move.valueOf(playerResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").trim().toUpperCase());
-      aiMove = Move.valueOf(aiResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").trim().toUpperCase());
+      playerMove = Move.valueOf(playerResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").replaceAll("\"", "").trim().toUpperCase());
+      aiMove = Move.valueOf(aiResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").replaceAll("\"", "").trim().toUpperCase());
 
-      int hasPlayerWon = hasWon(playerMove, aiMove);
+      int hasPlayerWon = judge.hasWon(playerMove, aiMove);
       gameDAO.insertRound(id, playerBot.getId(), aiBot.getId(), previousRound.getRoundNo() + 1, playerMove, aiMove, hasPlayerWon);
 
       // Return appropriate response to player
@@ -444,16 +397,6 @@ public class RockPaperScissorsLizardSpock {
 
     }
     
-  }
-
-  // Perform checks to determine who wins the game
-  // If player's bot win, return 1
-  // If player's bot lost, return -1
-  // else return 0
-  private int hasWon(Move playerMove, Move aiMove) {
-
-    return decisionMatrix.get(playerMove).get(aiMove).intValue();
-
   }
 
   private String testCode(String code, Language language) {

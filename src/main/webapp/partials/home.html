@@ -77,7 +77,7 @@
 						<h3>Bot</h3>
 					</div> <!-- /widget-header -->
 					<div class="widget-content" style="height:250px;" id="whoWin">
-						Hi
+						<img src = '../img/hands/spock.png' height='70' width='70'>
 					</div> <!-- /widget-content -->
 				</div> <!-- /widget -->
 			</div> <!-- /span6 -->
@@ -86,11 +86,7 @@
 </div> <!-- /main -->
 
 
-<script>
-$(function() {
-    console.log( "ready!" );
-});
-</script>
+
 <script type="text/javascript">
 
 function init() {
@@ -102,10 +98,167 @@ function init() {
 	gapi.client.load('rockpaperscissorslizardspock', 'v1', callback, 'https://smu-is429-group-project.appspot.com/_ah/api');
 
     document.getElementById('saveBot').onclick = function() {
-            saveBot();
+            play();
     }
 
 }
+function play() {
+
+	//var aiBotId = document.getElementById("txtAI").value;
+	//var name = document.getElementById("txtName").value;
+	//var code = document.getElementById("txtCode").value.replace(/\n/gm, "\\n").replace(/\"/gm, "\\\"");    // Need to escape line break and quote
+	//var language = document.getElementById("txtLanguage").value;
+	var _BotName = document.getElementById('botname').value;
+	var _Code = document.getElementById('code').value.replace(/\n/gm, "\\n").replace(/\"/gm, "\\\"");;
+	var _AiBotId = document.getElementById('validateSelect').value;
+	var _BotLanguage = document.getElementById('language').value;
+	var result = "";
+
+	var requestData = {};
+	requestData.playerBotName = _BotName;
+	requestData.playerBotCode = _Code;
+	requestData.aiBotId = _AiBotId;
+	requestData.language = _BotLanguage;
+	var rock = "<img src = '../img/hands/rock.png' height='70' width='70'>";
+	var paper = "<img src = '../img/hands/paper.png' height='70' width='70'>";
+	var scissors = "<img src = '../img/hands/scissors.png' height='70' width='70'>";
+	var lizard = "<img src = '../img/hands/lizard.png' height='70' width='70'>";
+	var spock = "<img src = '../img/hands/spock.png' height='70' width='70'>";
+	var aiMovePic = "";
+	var playerMovePic = "";
+	var winner = "You lose.";
+	var win = 0;
+	var lose = 0;
+	var draw = 0;
+	
+	
+	gapi.client.rockpaperscissorslizardspock.newGame(requestData).execute(function(resp) {
+
+		if(!resp.code) {
+			
+			var gameID = resp.gameSession.id;
+			console.log("Received first round");
+			if(resp.gameSession.hasPlayerWon == 0){
+				winner = "Draw Game.";
+				draw++;
+			}else if(resp.gameSession.hasPlayerWon == 1){
+				winner = "You win!";
+				win++;
+			}else{
+				lose++;
+			}
+			
+			if(resp.gameSession.playerMove == 'LIZARD'){
+				playerMovePic = lizard;
+			}else if(resp.gameSession.playerMove == 'ROCK'){
+				playerMovePic = rock;
+			}else if(resp.gameSession.playerMove == 'SCISSORS'){
+				playerMovePic = scissors;
+			}else if(resp.gameSession.playerMove == 'PAPER'){
+				playerMovePic = paper;
+			}else if(resp.gameSession.playerMove == 'SPOCK'){
+				playerMovePic = spock;
+			}
+			
+			if(resp.gameSession.aiMove == 'LIZARD'){
+				aiMovePic = lizard;
+			}else if(resp.gameSession.aiMove == 'ROCK'){
+				aiMovePic = rock;
+			}else if(resp.gameSession.aiMove == 'SCISSORS'){
+				aiMovePic = scissors;
+			}else if(resp.gameSession.aiMove == 'PAPER'){
+				aiMovePic = paper;
+			}else if(resp.gameSession.aiMove == 'SPOCK'){
+				aiMovePic = spock;
+			}
+			
+			result = result + "Round no: "+resp.gameSession.roundNo+ " <br> " +playerMovePic+ " vs "+aiMovePic +" <br> "+winner + "<br>";
+			console.log(result);
+			document.getElementById('whoWin').innerHTML = result
+			console.log("start recursion");
+			next(gameID, result, win, lose, draw);
+			console.log("end recursion");
+
+		}
+
+	});
+}
+
+function next(gameID, r, w,l,d) {
+
+	var requestData = {};
+	requestData.gameID = gameID;
+	var winner = "You lose.";
+	var result = r;
+	var win = w;
+	var lose = l;
+	var draw = d;
+	var rock = "<img src = '../img/hands/rock.png' height='70' width='70'>";
+	var paper = "<img src = '../img/hands/paper.png' height='70' width='70'>";
+	var scissors = "<img src = '../img/hands/scissors.png' height='70' width='70'>";
+	var lizard = "<img src = '../img/hands/lizard.png' height='70' width='70'>";
+	var spock = "<img src = '../img/hands/spock.png' height='70' width='70'>";
+	var aiMovePic = "";
+	var playerMovePic = "";
+
+	gapi.client.rockpaperscissorslizardspock.getNextMove(requestData).execute(function(resp) {
+
+		if(!resp.code) {
+			if(resp.gameSession.hasPlayerWon == 0){
+				winner = "Draw Game.";
+				draw++;
+			}else if(resp.gameSession.hasPlayerWon == 1){
+				winner = "You win!";
+				win++;
+			}else{
+				lose++;
+			}
+			
+			if(resp.gameSession.playerMove == 'LIZARD'){
+				playerMovePic = lizard;
+			}else if(resp.gameSession.playerMove == 'ROCK'){
+				playerMovePic = rock;
+			}else if(resp.gameSession.playerMove == 'SCISSORS'){
+				playerMovePic = scissors;
+			}else if(resp.gameSession.playerMove == 'PAPER'){
+				playerMovePic = paper;
+			}else if(resp.gameSession.playerMove == 'SPOCK'){
+				playerMovePic = spock;
+			}
+			
+			if(resp.gameSession.aiMove == 'LIZARD'){
+				aiMovePic = lizard;
+			}else if(resp.gameSession.aiMove == 'ROCK'){
+				aiMovePic = rock;
+			}else if(resp.gameSession.aiMove == 'SCISSORS'){
+				aiMovePic = scissors;
+			}else if(resp.gameSession.aiMove == 'PAPER'){
+				aiMovePic = paper;
+			}else if(resp.gameSession.aiMove == 'SPOCK'){
+				aiMovePic = spock;
+			}
+			result = result + "Round no: "+resp.gameSession.roundNo+ " <br> " +playerMovePic+ " vs "+aiMovePic +" <br> "+winner + "<br>";
+			
+			document.getElementById('whoWin').innerHTML = result;
+			console.log(resp);
+			
+			// Use recursion instead of a loop to keep on calling next() until
+			// the requirements have been reached then we stop the recursion
+			if(resp.gameSession.roundNo != 10) {
+				next(gameID, result,win,lose,draw);
+				
+			}
+			console.log("Win: "+win+" Draw: "+draw+" lose: "+lose);
+		}
+
+	});
+
+}
+
+function getResult(gameID){
+	
+}
+/*
 function saveBot(){
 	//Validate the entries
 	var _BotName = document.getElementById('botname').value;
@@ -149,7 +302,7 @@ function saveBot(){
 			document.getElementById('whoWin').innerHTML = "You Draw Bitch";
 		}else{
 			document.getElementById('whoWin').innerHTML = "You Lose Bitch";
-		} */
+		} 
 	});
 }
 
@@ -168,6 +321,7 @@ function nextGame(gameID){
 	console.log(roundNo);
 	return roundNo;
 }
+*/
 //extra line here
 function getBotList() {
 	console.log("inside list quotes");

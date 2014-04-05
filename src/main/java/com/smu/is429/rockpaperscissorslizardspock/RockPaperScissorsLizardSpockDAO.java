@@ -218,6 +218,34 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
 
+  public void deleteGame(String gameID) throws SQLException {
+
+    String statement = "DELETE FROM game_session WHERE id=?";
+    PreparedStatement stmt = conn.prepareStatement(statement);
+    stmt.setString(1, gameID);
+
+    int success = stmt.executeUpdate();
+
+    if(success == 0) {
+      throw new SQLException("Failure deleting game from database");
+    }
+
+  }
+
+  public void deleteBot(int botID) throws SQLException {
+
+    String statement = "DELETE FROM bot WHERE id=?";
+    PreparedStatement stmt = conn.prepareStatement(statement);
+    stmt.setInt(1, botID);
+
+    int success = stmt.executeUpdate();
+
+    if(success == 0) {
+      throw new SQLException("Failure deleting bot from database.");
+    }
+
+  }
+
   public void close() throws SQLException {
     conn.close();
   }
