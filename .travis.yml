@@ -9,7 +9,10 @@ before_script:
 - unzip appengine-java-sdk-1.9.1.zip
 - rm appengine-java-sdk-1.9.1.zip
 script:
-- cd smu-is429-rockpaperscissorslizardspock 
+- cd smu-is429-rockpaperscissorslizardspock
 - mvn test
 after_success:
-- ../appengine-java-sdk-1.9.1/bin/appcfg.sh --oauth2 update target
+- ../appengine-java-sdk-1.9.1/bin/appcfg.sh --oauth2 update target/rockpaperscissorlizardspock-war-1.0-SNAPSHOT < $GAE_TOKEN
+env:
+  global: 
+    secure: ndOPgUX5MbfO41pnhQK7wztN3Zg9iX1bcJAZeGz8BDIquJ8JV3VN/+skMrF3q63Ror5RKireTWpep2S1nPz8WLtz3v2Fc79L4NDbiCVqkV3g3IIYqgUip0dwxIEZ5i+tM4YgipQcIvNRhg3hjPJD4PeiWsKtuhbkR2buBWl7asU=
