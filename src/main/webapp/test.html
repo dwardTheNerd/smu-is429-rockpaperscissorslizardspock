@@ -24,14 +24,14 @@
   <script>
 
     function init() {
-      gapi.client.load("rockpaperscissorslizardspock", "v1", null, "http://localhost:8080/_ah/api");
+      gapi.client.load("rockpaperscissorslizardspock", "v1", null, "https://smu-is429-group-project.appspot.com/_ah/api");
     }
 
     function play() {
 
       var aiBotId = document.getElementById("txtAI").value;
       var name = document.getElementById("txtName").value;
-      var code = document.getElementById("txtCode").value.replace("\n", "\\n");    // Need to escape line break
+      var code = document.getElementById("txtCode").value.replace(/\n/gm, "\\n").replace(/\"/gm, "\\\"");    // Need to escape line break and quote
       var language = document.getElementById("txtLanguage").value;
 
       var requestData = {};

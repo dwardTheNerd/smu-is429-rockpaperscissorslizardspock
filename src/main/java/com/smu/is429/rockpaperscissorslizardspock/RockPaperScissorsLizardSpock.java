@@ -10,6 +10,7 @@ import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.UUID;
 import java.sql.SQLException;
 import java.util.EnumMap;
@@ -249,8 +250,8 @@ public class RockPaperScissorsLizardSpock {
 
       Move playerMove, aiMove = null;
 
-      playerMove = Move.valueOf(playerResponse.getResults()[0].getReceived().trim().toUpperCase());
-      aiMove = Move.valueOf(aiResponse.getResults()[0].getReceived().trim().toUpperCase());
+      playerMove = Move.valueOf(playerResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").trim().toUpperCase());
+      aiMove = Move.valueOf(aiResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").trim().toUpperCase());
 
       int hasPlayerWon = hasWon(playerMove, aiMove);
       gameDAO.insertRound(id, playerBot.getId(), aiBot.getId(), previousRound.getRoundNo() + 1, playerMove, aiMove, hasPlayerWon);
@@ -473,11 +474,11 @@ public class RockPaperScissorsLizardSpock {
       tests = "assert_equal('ANYTHING',play_game())";
       parameters += "{\"tests\":\""+ tests +"\",\"solution\":\"" + code + "\"}";
 
-    } else {   // Any other values we default to java
+    } else {   // Any other language values we default to javascript
 
-      urlString += "java";
-      tests = "assertEquals(playGame(),\"ANYTHING\")";
-      parameters += "{\"tests\":\""+ tests +"\",\"solution\":\"" + code + "\"}";
+      urlString += "js";
+      tests = "assert_equal('ANYTHING',playGame())";
+      parameters += "{\"tests\":\""+ tests +"\",\"solution\":\"" + URLEncoder.encode(code) + "\"}";
 
     }
 
@@ -493,6 +494,7 @@ public class RockPaperScissorsLizardSpock {
       conn.setRequestProperty("Content-Length", Integer.toString(parameters.length()));
 
       // Send post request
+     conn.setDoInput(true);
      conn.setDoOutput(true);
      DataOutputStream output = new DataOutputStream(conn.getOutputStream());
      output.writeBytes(parameters);
