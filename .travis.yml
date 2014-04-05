@@ -12,8 +12,7 @@ script:
 - cd smu-is429-rockpaperscissorslizardspock
 - mvn test
 after_success:
-- echo $EMAIL > ../access.txt
-- echo $PASSWORD >> ../access.txt
+- echo -e $EMAIL"\n"$PASSWORD > ../access.txt
 - "../appengine-java-sdk-1.9.1/bin/appcfg.sh --passin update target/rockpaperscissorlizardspock-war-1.0-SNAPSHOT
   < ../access.txt"
 env:
