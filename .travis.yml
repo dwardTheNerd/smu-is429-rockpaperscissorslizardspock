@@ -7,6 +7,5 @@ before_script:
 - unzip appengine-java-sdk-1.9.1.zip
 - rm appengine-java-sdk-1.9.1.zip
 script:
-- git clone https://github.com/dwardTheNerd/smu-is429-rockpaperscissorslizardspock.git
 - cd smu-is429-rockpaperscissorslizardspock 
 - mvn test
