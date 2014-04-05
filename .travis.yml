@@ -12,4 +12,4 @@ script:
 - cd smu-is429-rockpaperscissorslizardspock 
 - mvn test
 after_success:
-- appengine-java-sdk-1.9.1/bin/appcfg.sh --oauth2 update smu-is429-rockpaperscissorslizardspock/target
+- ../appengine-java-sdk-1.9.1/bin/appcfg.sh --oauth2 update smu-is429-rockpaperscissorslizardspock/target
