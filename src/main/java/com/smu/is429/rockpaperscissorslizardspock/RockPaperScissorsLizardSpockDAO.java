@@ -28,7 +28,7 @@ public class RockPaperScissorsLizardSpockDAO {
     
       // Local MySQL instance to use during development.
       Class.forName("com.mysql.jdbc.Driver");
-      url = "jdbc:mysql://173.194.86.207:3306/is429?user=root";
+      url = "jdbc:mysql://127.0.0.1/is429?user=root";
     
     }
 
