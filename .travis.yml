@@ -12,7 +12,7 @@ script:
 - cd smu-is429-rockpaperscissorslizardspock
 - mvn test
 after_success:
-- echo "echo "$PASSWORD" | ../appengine-java-sdk-1.9.1/bin/appcfg.sh --email="$EMAIL" --passin update smu-is429-rockpaperscissorslizardspock/target/rockpaperscissorlizardspock-war-1.0-SNAPSHOT" > ../deploy.sh
+- echo "echo "$PASSWORD" | ../appengine-java-sdk-1.9.1/bin/appcfg.sh --email="$EMAIL" --passin update target/rockpaperscissorlizardspock-war-1.0-SNAPSHOT" > ../deploy.sh
 - sh ../deploy.sh
 env:
   global:
