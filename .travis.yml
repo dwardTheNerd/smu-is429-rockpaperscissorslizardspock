@@ -12,7 +12,8 @@ script:
 - cd smu-is429-rockpaperscissorslizardspock
 - mvn test
 after_success:
-- ../appengine-java-sdk-1.9.1/bin/appcfg.sh --oauth2 update target/rockpaperscissorlizardspock-war-1.0-SNAPSHOT
+- echo $GAE_TOKEN > ../token.txt
+- "../appengine-java-sdk-1.9.1/bin/appcfg.sh --oauth2 update target/rockpaperscissorlizardspock-war-1.0-SNAPSHOT < ../token.txt"
 env:
-  global: 
-    secure: ndOPgUX5MbfO41pnhQK7wztN3Zg9iX1bcJAZeGz8BDIquJ8JV3VN/+skMrF3q63Ror5RKireTWpep2S1nPz8WLtz3v2Fc79L4NDbiCVqkV3g3IIYqgUip0dwxIEZ5i+tM4YgipQcIvNRhg3hjPJD4PeiWsKtuhbkR2buBWl7asU=
+  global:
+  - secure: blSaFbr8VCodykqK3UkmDkEewNPpR+iuj2DOXTstB5FOjrJ7skNggRP2CtTAo6S+xiC/bvXTGPcy0732pCpzFnTp6ch6Xjvif/N2dBbQs2u1pvpSAbI8HVi/eTGa5lAkN4MfTaWLdBzPw3+hnbMgAfHTPADLaLtRZr+fUt60b14=
