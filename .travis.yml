@@ -1,11 +1,10 @@
 language: java
+install:
+- mvn install -DskipTests=true
 before_script:
-- cd ..
+- cd
 - wget https://commondatastorage.googleapis.com/appengine-sdks/featured/appengine-java-sdk-1.9.1.zip
 - unzip appengine-java-sdk-1.9.1.zip
 - rm appengine-java-sdk-1.9.1.zip
-install:
-- cd smu-is429-rockpaperscissorslizardspock
-- mvn install -DskipTests=true
-script:
+script: 
 - mvn test
