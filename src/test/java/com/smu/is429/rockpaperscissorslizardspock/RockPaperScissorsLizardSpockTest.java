@@ -25,7 +25,7 @@ public class RockPaperScissorsLizardSpockTest {
 
     String code = "def play_game():\\n  return 'PAPER'";
 
-    Response response = app.newGame("JUnit Test", code, 2, Language.PYTHON);
+    Response response = app.newGame("JUnit Test", code, 1, Language.PYTHON);
     GameSession session = response.getGameSession();
 
     assertThat(response.getSuccess(), is(true));
@@ -48,7 +48,7 @@ public class RockPaperScissorsLizardSpockTest {
 
     String code = "def play_game()\\n  return 'PAPER'\\nend";
 
-    Response response = app.newGame("JUnit Test", code, 2, Language.RUBY);
+    Response response = app.newGame("JUnit Test", code, 1, Language.RUBY);
     GameSession session = response.getGameSession();
 
     assertThat(response.getSuccess(), is(true));
@@ -70,7 +70,7 @@ public class RockPaperScissorsLizardSpockTest {
 
     String code = "function playGame() {\\n  return \\\"PAPER\\\";\\n}";
 
-    Response response = app.newGame("JUnit Test", code, 2, Language.JAVASCRIPT);
+    Response response = app.newGame("JUnit Test", code, 1, Language.JAVASCRIPT);
     GameSession session = response.getGameSession();
 
     assertThat(response.getSuccess(), is(true));
