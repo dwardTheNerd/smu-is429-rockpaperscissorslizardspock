@@ -96,6 +96,9 @@ public class RockPaperScissorsLizardSpockDAO {
       bots.add(new Bot(rs.getInt("id"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("level")));
     }
     
+    rs.close();
+    stmt.close();
+
     return bots;
 
   }
@@ -158,6 +161,9 @@ public class RockPaperScissorsLizardSpockDAO {
 
     }
     
+    rs.close();
+    stmt.close();
+
     return sessions;
 
   }
@@ -167,10 +173,23 @@ public class RockPaperScissorsLizardSpockDAO {
   // from list
   public void updateBotStatus(int botId, int isVisible, int aiBotId) throws SQLException {
 
-    String statement = "UPDATE bot SET isVisible=?, level=((SELECT level from bot where id=?) + 1) WHERE id=?";
+    String statement = "SELECT level FROM bot WHERE id=?";
     PreparedStatement stmt = conn.prepareStatement(statement);
+    stmt.setInt(1, aiBotId);
+
+    ResultSet rs = stmt.executeQuery();
+    int level = -1;
+    while(rs.next()) {
+      level = rs.getInt(level);
+    }
+
+    rs.close();
+    stmt.close();
+
+    statement = "UPDATE bot SET isVisible=?, level=? WHERE id=?";
+    stmt = conn.prepareStatement(statement);
     stmt.setInt(1, isVisible);
-    stmt.setInt(2, aiBotId);
+    stmt.setInt(2, level);
     stmt.setInt(3, botId);
 
     int success = stmt.executeUpdate();
@@ -178,6 +197,8 @@ public class RockPaperScissorsLizardSpockDAO {
     if(success == 0) {
       throw new SQLException("Failure updating bot status in database.");
     }
+
+    stmt.close();
 
   }
   
@@ -231,6 +252,8 @@ public class RockPaperScissorsLizardSpockDAO {
       throw new SQLException("Failure deleting game from database");
     }
 
+    stmt.close();
+
   }
 
   public void deleteBot(int botID) throws SQLException {
@@ -244,6 +267,8 @@ public class RockPaperScissorsLizardSpockDAO {
     if(success == 0) {
       throw new SQLException("Failure deleting bot from database.");
     }
+
+    stmt.close();
 
   }
 
