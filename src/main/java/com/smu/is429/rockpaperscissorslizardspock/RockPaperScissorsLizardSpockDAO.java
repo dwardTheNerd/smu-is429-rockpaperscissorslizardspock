@@ -77,7 +77,7 @@ public class RockPaperScissorsLizardSpockDAO {
     ResultSet rs = stmt.executeQuery();
     Bot bot = null;
     while(rs.next()) {
-      bot = new Bot(rs.getInt("id"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("eloRating"), rs.getInt("win"), rs.getInt("lose"), rs.getInt("draw"), rs.getInt("userId"));
+      bot = new Bot(rs.getInt("id"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("eloRating"), rs.getInt("win"), rs.getInt("lose"), rs.getInt("draw"), rs.getString("userId"));
     }
 
     rs.close();
