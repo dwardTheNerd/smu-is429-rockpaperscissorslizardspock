@@ -170,7 +170,7 @@ public class RockPaperScissorsLizardSpockDAO {
     String statement = "UPDATE bot SET isVisible=?, level=((SELECT level from bot where id=?) + 1) WHERE id=?";
     PreparedStatement stmt = conn.prepareStatement(statement);
     stmt.setInt(1, isVisible);
-    stmt.setInt(2, aiBotId),
+    stmt.setInt(2, aiBotId);
     stmt.setInt(3, botId);
 
     int success = stmt.executeUpdate();
