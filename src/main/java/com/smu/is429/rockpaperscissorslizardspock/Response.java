@@ -19,8 +19,8 @@ public class Response {
     this.gameSession = gameSession;
   }
   
-  public void setGameScore(int gameScore) {
-   this.gameScore = gameScore; 
+  public void setTotalScore(int totalScore) {
+   this.totalScore = totalScore; 
   }
   
   public void setMessage(String message) {

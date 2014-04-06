@@ -155,7 +155,7 @@ public class RockPaperScissorsLizardSpock {
         // Positive score means player has won. So player's bot will be
         // made public for other users to select
         if (totalScore > 0) {
-          
+
            gameDAO.updateBotStatus(previousRound.getPlayerBotId(), 1);
           
            response = new Response();
@@ -347,22 +347,22 @@ public class RockPaperScissorsLizardSpock {
   @ApiMethod(name="getTotalScore", path="getTotalScore")
   public Response getTotalScore(@Named("gameId") String gameId) {
     
-    int result = -9999;
+    int totalScore = -9999;
     RockPaperScissorsLizardSpockDAO gameDAO = null;
     Response response = null;
     
     try {
       
       gameDAO = new RockPaperScissorsLizardSpockDAO();
-      result = gameDAO.getTotalScore(gameId);
+      totalScore = gameDAO.getTotalScore(gameId);
       
       response = new Response();
       response.setSuccess(true);
-      response.setGameScore(result);
+      response.setTotalScore(totalScore);
       
-      if(result > 0) {
+      if(totalScore > 0) {
         response.setMessage("Player has won the game");
-      } else if(result == 0) {
+      } else if(totalScore == 0) {
         response.setMessage("Player drew with AI"); 
       } else {
         response.setMessage("Player lost to AI"); 
