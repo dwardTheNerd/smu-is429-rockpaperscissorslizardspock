@@ -18,7 +18,7 @@ public class RockPaperScissorsLizardSpockTest {
 
   }
 
-  @Test
+  /*@Test
   public void testCreateNewPythonGame() throws SQLException, Exception {
 
     RockPaperScissorsLizardSpock app = new RockPaperScissorsLizardSpock();
@@ -83,7 +83,7 @@ public class RockPaperScissorsLizardSpockTest {
 
     gameDAO.close();
 
-  }
+  }*/
 
   @Test
   public void testGameMechanics() throws SQLException, Exception {
