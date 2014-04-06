@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS bot (
   code TEXT NOT NULL,
   language ENUM('JAVASCRIPT', 'PYTHON', 'RUBY') NOT NULL,
   isVisible TINYINT(1) NOT NULL,
-  level INT UNSIGNED NULL,
+  level INT DEFAULT -1,
   PRIMARY KEY(id)
 );
 

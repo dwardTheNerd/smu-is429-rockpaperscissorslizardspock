@@ -5,13 +5,15 @@ public class Bot {
   private int id;
   private String name, code;
   private Language language;
+  private int level = -1;
 
-  public Bot(int id, String name, String code, Language language) {
+  public Bot(int id, String name, String code, Language language, int level) {
 
     this.id = id;
     this.name = name;
     this.code = code;
     this.language = language;
+    this.level = level;
 
   };
 
@@ -29,6 +31,10 @@ public class Bot {
 
   public String getName() {
     return name;
+  }
+
+  public int getLevel() {
+    return level;
   }
 
 }
