@@ -7,14 +7,6 @@ public class GameSession {
   private Move playerMove, aiMove;
   private int score;
   private int playerBotId, aiBotId;
-  
-  public GameSession(String id, int roundNo, Move playerMove, Move aiMove, int score) {
-    this.id = id;
-    this.roundNo = roundNo;
-    this.playerMove = playerMove;
-    this.aiMove = aiMove;
-    this.score = score;
-  }
 
   public GameSession(String id, int roundNo, int playerBotId, int aiBotId, Move playerMove, Move aiMove, int score) {
     this.id = id;

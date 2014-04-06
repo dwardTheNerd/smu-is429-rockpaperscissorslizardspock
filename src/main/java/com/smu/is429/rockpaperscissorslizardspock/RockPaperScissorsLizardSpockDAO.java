@@ -180,7 +180,7 @@ public class RockPaperScissorsLizardSpockDAO {
     ResultSet rs = stmt.executeQuery();
     int level = -2;
     while(rs.next()) {
-      level = rs.getInt(level);
+      level = rs.getInt("level");
     }
 
     rs.close();

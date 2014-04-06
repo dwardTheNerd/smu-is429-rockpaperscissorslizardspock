@@ -221,7 +221,7 @@ public class RockPaperScissorsLizardSpock {
       response = new Response();
       response.setSuccess(true);
       response.setTotalScore(totalScore + score);
-      response.setGameSession(new GameSession(id, previousRound.getRoundNo() + 1, playerMove, aiMove, score));
+      response.setGameSession(new GameSession(id, previousRound.getRoundNo() + 1, playerBot.getId(), aiBot.getId(), playerMove, aiMove, score));
       return response;
 
     } catch(SQLException ex) {
