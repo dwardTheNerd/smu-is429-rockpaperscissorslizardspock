@@ -162,8 +162,8 @@ public class RockPaperScissorsLizardSpock {
         if (totalScore > 0) {         
            int playerNewEloRating = calculateRating(1, playerBot.getEloRating(), aiBot.getEloRating());
 		   int aiNewEloRating = calculateRating(0, aiBot.getEloRating(), playerBot.getEloRating());
-		   gameDAO.updateBotRating(playerBot.getId());
-		   gameDAO.updateBotRating(aiBot.getId());
+		   gameDAO.updateBotRating(playerBot.getId(), playerNewEloRating);
+		   gameDAO.updateBotRating(aiBot.getId(), aiNewEloRating);
 		   gameDAO.updateBotWinStatus(playerBot.getId());
 		   gameDAO.updateBotLoseStatus(aiBot.getId());
 		   
@@ -176,8 +176,8 @@ public class RockPaperScissorsLizardSpock {
         } else if(totalScore == 0) {
 		   int playerNewEloRating = calculateRating(0.5, playerBot.getEloRating(), aiBot.getEloRating());
 		   int aiNewEloRating = calculateRating(0.5, aiBot.getEloRating(), playerBot.getEloRating());
-		   gameDAO.updateBotRating(playerBot.getId());
-		   gameDAO.updateBotRating(aiBot.getId());
+		   gameDAO.updateBotRating(playerBot.getId(), playerNewEloRating);
+		   gameDAO.updateBotRating(aiBot.getId(), aiNewEloRating);
 		   gameDAO.updateBotDrawStatus(playerBot.getId());
 		   gameDAO.updateBotDrawStatus(aiBot.getId());
           
@@ -190,8 +190,8 @@ public class RockPaperScissorsLizardSpock {
         } else {
 		   int playerNewEloRating = calculateRating(0, playerBot.getEloRating(), aiBot.getEloRating());
 		   int aiNewEloRating = calculateRating(1, aiBot.getEloRating(), playerBot.getEloRating());
-		   gameDAO.updateBotRating(playerBot.getId());
-		   gameDAO.updateBotRating(aiBot.getId());
+		   gameDAO.updateBotRating(playerBot.getId(), playerNewEloRating);
+		   gameDAO.updateBotRating(aiBot.getId(), aiNewEloRating);
 		   gameDAO.updateBotLoseStatus(playerBot.getId());
 		   gameDAO.updateBotWinStatus(aiBot.getId());
           
@@ -252,8 +252,8 @@ public class RockPaperScissorsLizardSpock {
           //gameDAO.updateBotStatus(previousRound.getPlayerBotId(), 1, previousRound.getAiBotId());
 		  int playerNewEloRating = calculateRating(1, playerBot.getEloRating(), aiBot.getEloRating());
 		  int aiNewEloRating = calculateRating(0, aiBot.getEloRating(), playerBot.getEloRating());
-		  gameDAO.updateBotRating(playerBot.getId());
-		  gameDAO.updateBotRating(aiBot.getId());
+		  gameDAO.updateBotRating(playerBot.getId(), playerNewEloRating);
+		  gameDAO.updateBotRating(aiBot.getId(), aiNewEloRating);
 		  gameDAO.updateBotWinStatus(playerBot.getId());
 		  gameDAO.updateBotLoseStatus(aiBot.getId());
 
@@ -263,8 +263,8 @@ public class RockPaperScissorsLizardSpock {
 
 		  int playerNewEloRating = calculateRating(0.5, playerBot.getEloRating(), aiBot.getEloRating());
 		  int aiNewEloRating = calculateRating(0.5, aiBot.getEloRating(), playerBot.getEloRating());
-		  gameDAO.updateBotRating(playerBot.getId());
-		  gameDAO.updateBotRating(aiBot.getId());
+		  gameDAO.updateBotRating(playerBot.getId(), playerNewEloRating);
+		  gameDAO.updateBotRating(aiBot.getId(), aiNewEloRating);
 		  gameDAO.updateBotDrawStatus(playerBot.getId());
 		  gameDAO.updateBotDrawStatus(aiBot.getId());
 		  
@@ -273,8 +273,8 @@ public class RockPaperScissorsLizardSpock {
         } else {
 		  int playerNewEloRating = calculateRating(0, playerBot.getEloRating(), aiBot.getEloRating());
 		  int aiNewEloRating = calculateRating(1, aiBot.getEloRating(), playerBot.getEloRating());
-		  gameDAO.updateBotRating(playerBot.getId());
-		  gameDAO.updateBotRating(aiBot.getId());
+		  gameDAO.updateBotRating(playerBot.getId(), playerNewEloRating);
+		  gameDAO.updateBotRating(aiBot.getId(), aiNewEloRating);
 		  gameDAO.updateBotLoseStatus(playerBot.getId());
 		  gameDAO.updateBotWinStatus(aiBot.getId());
 		  
