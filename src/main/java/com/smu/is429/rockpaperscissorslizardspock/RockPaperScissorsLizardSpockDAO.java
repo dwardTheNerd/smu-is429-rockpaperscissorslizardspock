@@ -279,7 +279,7 @@ public class RockPaperScissorsLizardSpockDAO {
     stmt.close();
 
   }
-
+  
   public void close() throws SQLException {
     conn.close();
   }
