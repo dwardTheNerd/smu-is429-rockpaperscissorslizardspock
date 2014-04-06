@@ -43,10 +43,10 @@ public class RockPaperScissorsLizardSpockDAO {
     stmt.setString(1, name);
     stmt.setString(2, bot);
     stmt.setString(3, language.name());
-	stmt.setString(4, eloRating);
-	stmt.setString(5, win);
-	stmt.setString(6, lose);
-	stmt.setString(7, draw);
+	stmt.setInt(4, eloRating);
+	stmt.setInt(5, win);
+	stmt.setInt(6, lose);
+	stmt.setInt(7, draw);
 	stmt.setString(8, userId);
 
     int success = stmt.executeUpdate();
