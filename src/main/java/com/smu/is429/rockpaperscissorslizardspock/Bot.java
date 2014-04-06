@@ -5,23 +5,16 @@ public class Bot {
   private int id;
   private String name, code;
   private Language language;
-  private int eloRating = 1400;
-  private int win = 0;
-  private int lose = 0;
-  private int draw = 0;
-  private String userId;
+  private int level = -1;
 
-  public Bot(int id, String name, String code, Language language, int eloRating, int win, int lose, int draw, String userId) {
+  public Bot(int id, String name, String code, Language language, int level) {
 
     this.id = id;
     this.name = name;
     this.code = code;
     this.language = language;
-    this.eloRating = eloRating;
-	this.win = win;
-	this.lose = lose;
-	this.draw = draw;
-	this.userId = userId;
+    this.level = level;
+
   };
 
   public int getId() {
@@ -39,24 +32,9 @@ public class Bot {
   public String getName() {
     return name;
   }
-  
-  public int getEloRating() {
-	return eloRating;
+
+  public int getLevel() {
+    return level;
   }
-  
-  public int getWin() {
-	return win;
-  }
-  
-  public int getLose() {
-	return lose;
-  }
-  
-  public int getDraw() {
-	return draw;
-  }
-  
-  public String getUserId() {
-	return userId;
-  }
+
 }

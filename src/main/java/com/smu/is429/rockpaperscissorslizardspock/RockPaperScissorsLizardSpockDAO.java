@@ -36,18 +36,13 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
 
-  public int insertBot(String name, String bot, Language language, int eloRating, int win, int lose, int draw, String userId) throws SQLException {
+  public int insertBot(String name, String bot, Language language) throws SQLException {
 
-    String statement = "INSERT INTO bot (name, code, language, eloRating, win, lose, draw, userId) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+    String statement = "INSERT INTO bot (name, code, language, isVisible) VALUES(?, ?, ?, 0)";
     PreparedStatement stmt = conn.prepareStatement(statement, Statement.RETURN_GENERATED_KEYS);
     stmt.setString(1, name);
     stmt.setString(2, bot);
     stmt.setString(3, language.name());
-	stmt.setInt(4, eloRating);
-	stmt.setInt(5, win);
-	stmt.setInt(6, lose);
-	stmt.setInt(7, draw);
-	stmt.setString(8, userId);
 
     int success = stmt.executeUpdate();
 
@@ -77,7 +72,7 @@ public class RockPaperScissorsLizardSpockDAO {
     ResultSet rs = stmt.executeQuery();
     Bot bot = null;
     while(rs.next()) {
-      bot = new Bot(rs.getInt("id"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("eloRating"), rs.getInt("win"), rs.getInt("lose"), rs.getInt("draw"), rs.getString("userId"));
+      bot = new Bot(rs.getInt("id"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("level"));
     }
 
     rs.close();
@@ -93,12 +88,12 @@ public class RockPaperScissorsLizardSpockDAO {
 
     ArrayList<Bot> bots = new ArrayList<Bot>();
 
-    String statement = "SELECT * FROM bot";
+    String statement = "SELECT * FROM bot WHERE isVisible=1";
     PreparedStatement stmt = conn.prepareStatement(statement);
 
     ResultSet rs = stmt.executeQuery();
     while(rs.next()) {
-      bots.add(new Bot(rs.getInt("id"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("eloRating"), rs.getInt("win"), rs.getInt("lose"), rs.getInt("draw"), rs.getString("userId")));
+      bots.add(new Bot(rs.getInt("id"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("level")));
     }
     
     rs.close();
@@ -213,98 +208,6 @@ public class RockPaperScissorsLizardSpockDAO {
 
     stmt.close();
 
-  }
-  
-  // Update bot's elo rating
-  public void updateBotRating (int botId, int eloRating) throws SQLException {
-    String statement = "UPDATE bot SET eloRating=? WHERE id=?";
-    PreparedStatement stmt = conn.prepareStatement(statement);
-    stmt.setInt(1, eloRating);
-    stmt.setInt(2, botId);
-
-    int success = stmt.executeUpdate();
-    if(success == 0) {
-      throw new SQLException("Failure updating bot elo rating in database.");
-    }
-    stmt.close();
-  }
-  
-  // Update bot's win status
-  public void updateBotWinStatus(int botId) throws SQLException {
-    String statement = "SELECT win FROM bot where id=?";
-	PreparedStatement stmt = conn.prepareStatement(statement);
-	
-	REsultSet rs = stmt.executeQuery();
-	int win = 0;
-	while(rs.next()) {
-	  win = rs.getInt("win");
-	}
-	rs.close();
-	stmt.close();
-	
-	statement = "UPDATE bot SET win=? WHERE id=?";
-	stmt = conn.prepareStatement(statement);
-	stmt.setInt(1, win + 1);
-	stmt.setInt(2, botId);
-	
-	int success = stmt.executeUpdate();
-
-    if(success == 0) {
-      throw new SQLException("Failure updating bot win status in database.");
-    }
-    stmt.close();
-  }
-  
-  // Update bot's lose status
-  public void updateBotLoseStatus(int botId) throws SQLException {
-    String statement = "SELECT lose FROM bot where id=?";
-	PreparedStatement stmt = conn.prepareStatement(statement);
-	
-	REsultSet rs = stmt.executeQuery();
-	int lose = 0;
-	while(rs.next()) {
-	  lose = rs.getInt("lose");
-	}
-	rs.close();
-	stmt.close();
-	
-	statement = "UPDATE bot SET lose=? WHERE id=?";
-	stmt = conn.prepareStatement(statement);
-	stmt.setInt(1, lose + 1);
-	stmt.setInt(2, botId);
-	
-	int success = stmt.executeUpdate();
-
-    if(success == 0) {
-      throw new SQLException("Failure updating bot lose status in database.");
-    }
-    stmt.close();
-  }
-  
-  // Update bot's draw status
-  public void updateBotDrawStatus(int botId) throws SQLException {
-    String statement = "SELECT draw FROM bot where id=?";
-	PreparedStatement stmt = conn.prepareStatement(statement);
-	
-	REsultSet rs = stmt.executeQuery();
-	int draw = 0;
-	while(rs.next()) {
-	  draw = rs.getInt("draw");
-	}
-	rs.close();
-	stmt.close();
-	
-	statement = "UPDATE bot SET draw=? WHERE id=?";
-	stmt = conn.prepareStatement(statement);
-	stmt.setInt(1, draw + 1);
-	stmt.setInt(2, botId);
-	
-	int success = stmt.executeUpdate();
-
-    if(success == 0) {
-      throw new SQLException("Failure updating bot draw status in database.");
-    }
-    stmt.close();
   }
   
   public int getTotalScore(String gameId) throws SQLException {
