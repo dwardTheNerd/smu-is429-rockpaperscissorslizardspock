@@ -178,7 +178,7 @@ public class RockPaperScissorsLizardSpockDAO {
     stmt.setInt(1, aiBotId);
 
     ResultSet rs = stmt.executeQuery();
-    int level = -1;
+    int level = -2;
     while(rs.next()) {
       level = rs.getInt(level);
     }
@@ -186,10 +186,18 @@ public class RockPaperScissorsLizardSpockDAO {
     rs.close();
     stmt.close();
 
+    // Level will remain as -2 if we cannot retrieve the opponent bot
+    // If that is the case, the player bot is going against an bot that
+    // does not exists so that is invalid in the first place. End 
+    // execution immediately
+    if(level == -2) {
+      return;
+    }
+
     statement = "UPDATE bot SET isVisible=?, level=? WHERE id=?";
     stmt = conn.prepareStatement(statement);
     stmt.setInt(1, isVisible);
-    stmt.setInt(2, level);
+    stmt.setInt(2, level + 1);
     stmt.setInt(3, botId);
 
     int success = stmt.executeUpdate();
