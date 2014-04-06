@@ -150,14 +150,12 @@ public class RockPaperScissorsLizardSpock {
 
       int totalScore = gameDAO.getTotalScore(id);
 
-      // If 10 rounds has been reached...
+      // If all rounds has been completed, no need to process any more
+      // rounds. Just inform player who has won
       if(previousRound.getRoundNo() == NUMBER_OF_ROUNDS) {
         
-        // Positive score means player has won. So player's bot will be
-        // made public for other users to select
-        if (totalScore > 0) {
-
-           gameDAO.updateBotStatus(previousRound.getPlayerBotId(), 1, previousRound.getAiBotId());
+        // Positive score means player has won.
+        if (totalScore > 0) {         
           
            response = new Response();
            response.setSuccess(true);
@@ -216,11 +214,37 @@ public class RockPaperScissorsLizardSpock {
 
       int score = judge.hasWon(playerMove, aiMove);
       gameDAO.insertRound(id, playerBot.getId(), aiBot.getId(), previousRound.getRoundNo() + 1, playerMove, aiMove, score);
+      totalScore += score;
 
-      // Return appropriate response to player
       response = new Response();
+
+      // The moment the last round is reached and successfully processed,
+      //  we need to check for winning condition
+      if((previousRound.getRoundNo() + 1) == NUMBER_OF_ROUNDS) {
+
+        // Positive score means player has won. So player's bot will be
+        // made public for other users to select
+        if (totalScore > 0) {
+
+          // Update player's bot status
+          gameDAO.updateBotStatus(previousRound.getPlayerBotId(), 1, previousRound.getAiBotId());
+
+          response.setMessage("Congratulations! Your bot has won the game!");
+
+        } else if(totalScore == 0) {
+
+          response.setMessage("Your bot draw the game! Don't be sad, try again!");
+
+        } else {
+
+          response.setMessage("Your bot lost the game. Try modifying your codes and try again!");
+
+        }
+
+      }
+      
       response.setSuccess(true);
-      response.setTotalScore(totalScore + score);
+      response.setTotalScore(totalScore);
       response.setGameSession(new GameSession(id, previousRound.getRoundNo() + 1, playerBot.getId(), aiBot.getId(), playerMove, aiMove, score));
       return response;
 
