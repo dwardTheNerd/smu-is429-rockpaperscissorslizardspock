@@ -231,7 +231,7 @@ public class RockPaperScissorsLizardSpockDAO {
   
   public ArrayList<Move> getAiMoveHistory(int botId) throws SQLException {
 
-    String statement = "SELECT aiMove from game_session WHERE aiBotId=?";
+    String statement = "SELECT aiMove from game_session WHERE aiBotId=? ORDER BY id LIMIT 10";
     PreparedStatement stmt = conn.prepareStatement(statement);
     stmt.setInt(1, botId);
     
@@ -248,6 +248,26 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
 
+  public ArrayList<Move> getAiMoveHistory(int botId, String gameId) throws SQLException {
+
+    String statement = "SELECT aiMove from game_session WHERE aiBotId=? AND id=? ORDER BY roundNo DESC LIMIT 10";
+    PreparedStatement stmt = conn.prepareStatement(statement);
+    stmt.setInt(1, botId);
+    stmt.setString(2, gameId);
+    
+    ArrayList<Move> history = new ArrayList<Move>();
+    ResultSet rs = stmt.executeQuery();
+    while(rs.next()) {
+      history.add(Move.valueOf(rs.getString("aiMove")));
+    }
+
+    rs.close();
+    stmt.close();
+
+    return history;
+
+  }
+  
   public void deleteGame(String gameID) throws SQLException {
 
     String statement = "DELETE FROM game_session WHERE id=?";

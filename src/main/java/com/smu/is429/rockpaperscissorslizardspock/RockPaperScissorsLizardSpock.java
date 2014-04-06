@@ -507,4 +507,23 @@ public class RockPaperScissorsLizardSpock {
     return UUID.randomUUID().toString();
   }
 
+  // Convert the ArrayList of bot moves to a string form
+  // representing list/array in the three available languages
+  private String convertMoveList(ArrayList<Move> moveList) {
+    
+    String moves = "[";
+    
+    for(int i = 0; i < moveList.size(); i++) {
+      Move move = moveList.get(i); 
+      moves += "'" + move.toString() + "',";
+    }
+    
+    // Remove the last comma
+    moves = moves.substring(0, moves.length() - 1);
+    moves += "]";
+    
+    return moves;
+    
+  }
+  
 }
