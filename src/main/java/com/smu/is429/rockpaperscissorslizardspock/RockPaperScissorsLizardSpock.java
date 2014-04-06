@@ -92,6 +92,7 @@ public class RockPaperScissorsLizardSpock {
       response = new Response();
       response.setSuccess(true);
       response.setGameSession(new GameSession(id, 1, playerBotId, aiBot.getId(), playerMove, aiMove, score));
+      response.setTotalScore(score);
       return response;
       
     } catch(SQLException ex) {
@@ -146,24 +147,28 @@ public class RockPaperScissorsLizardSpock {
         throw new Exception("Game not found!");
       }
 
+      int totalScore = gameDAO.getTotalScore(id);
+
       // If 10 rounds has been reached...
       if(previousRound.getRoundNo() == NUMBER_OF_ROUNDS) {
         
-        int result = gameDAO.getGameScore(previousRound.getId());
-        
         // Positive score means player has won. So player's bot will be
         // made public for other users to select
-        if (result > 0) {
+        if (totalScore > 0) {
+          
            gameDAO.updateBotStatus(previousRound.getPlayerBotId(), 1);
           
            response = new Response();
            response.setSuccess(true);
+           response.setTotalScore(totalScore);
            response.setMessage("Congratulations! Your bot has won the game!");
            return response;
-        } else if(result == 0) {
+
+        } else if(totalScore == 0) {
           
            response = new Response();
            response.setSuccess(true);
+           response.setTotalScore(totalScore);
            response.setMessage("Your bot draw the game! Don't be sad, try again!");
            return response;
            
@@ -171,6 +176,7 @@ public class RockPaperScissorsLizardSpock {
           
            response = new Response();
            response.setSuccess(true);
+           response.setTotalScore(totalScore);
            response.setMessage("Your bot lost the game. Try modifying your codes and try again!");
            return response;
         }
@@ -212,6 +218,7 @@ public class RockPaperScissorsLizardSpock {
       // Return appropriate response to player
       response = new Response();
       response.setSuccess(true);
+      response.setTotalScore(totalScore + score);
       response.setGameSession(new GameSession(id, previousRound.getRoundNo() + 1, playerMove, aiMove, score));
       return response;
 
@@ -337,8 +344,8 @@ public class RockPaperScissorsLizardSpock {
 
   // Retrieve the score for a particular game
   // The score is obtained by summing up the scores from each round
-  @ApiMethod(name="getGameScore", path="getGameScore")
-  public Response getGameScore(@Named("gameId") String gameId) {
+  @ApiMethod(name="getTotalScore", path="getTotalScore")
+  public Response getTotalScore(@Named("gameId") String gameId) {
     
     int result = -9999;
     RockPaperScissorsLizardSpockDAO gameDAO = null;
@@ -347,7 +354,7 @@ public class RockPaperScissorsLizardSpock {
     try {
       
       gameDAO = new RockPaperScissorsLizardSpockDAO();
-      result = gameDAO.getGameScore(gameId);
+      result = gameDAO.getTotalScore(gameId);
       
       response = new Response();
       response.setSuccess(true);

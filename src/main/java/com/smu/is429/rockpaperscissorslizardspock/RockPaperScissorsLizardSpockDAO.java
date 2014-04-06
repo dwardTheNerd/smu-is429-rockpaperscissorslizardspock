@@ -180,7 +180,7 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
   
-  public int getGameScore(String gameId) throws SQLException {
+  public int getTotalScore(String gameId) throws SQLException {
    
     String statement = "SELECT SUM(score) AS 'result' FROM game_session WHERE id=?";
     PreparedStatement stmt = conn.prepareStatement(statement);

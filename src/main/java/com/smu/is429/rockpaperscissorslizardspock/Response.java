@@ -5,7 +5,7 @@ public class Response {
   private boolean success;
   private String message;
   private GameSession gameSession;
-  private int gameScore;
+  private int totalScore;
   
   public Response() {
     this.success = false;
@@ -39,7 +39,7 @@ public class Response {
     return gameSession;
   }
 
-  public int getGameScore() {
-    return gameScore;
+  public int getTotalScore() {
+    return totalScore;
   }
 }
