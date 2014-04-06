@@ -64,6 +64,7 @@ FB.Event.subscribe('message.send', function(targetUrl) {
 				<ul class="nav pull-right">
 					<li ng-show="auth.user" ng-cloak>
 						<a href="" style="font-size:14px">{{auth.user.name}}</a>
+						<input style="border: none;display:none" type="text" id="userid" value="{{auth.user.id}}"/>
 					</li>
 					<li ng-show="auth.user" ng-cloak>
 						<a href="" style="font-size:14px" ng-click="auth.$logout()">Logout</a>

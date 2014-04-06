@@ -112,6 +112,11 @@ function play() {
 	var _Code = document.getElementById('code').value.replace(/\n/gm, "\\n").replace(/\"/gm, "\\\"");;
 	var _AiBotId = document.getElementById('validateSelect').value;
 	var _BotLanguage = document.getElementById('language').value;
+	var _tempUserId = document.getElementById('userid');
+	var _UserId = "";
+	if(_tempUserId.value.length > 0) {
+		_UserId = _tempUserId.value;
+	}
 	var result = "";
 
 	var requestData = {};
@@ -119,6 +124,7 @@ function play() {
 	requestData.playerBotCode = _Code;
 	requestData.aiBotId = _AiBotId;
 	requestData.language = _BotLanguage;
+	requestDate.userId = _UserId;
 	var rock = "<img src = '../img/hands/rock.png' height='70' width='70'>";
 	var paper = "<img src = '../img/hands/paper.png' height='70' width='70'>";
 	var scissors = "<img src = '../img/hands/scissors.png' height='70' width='70'>";
