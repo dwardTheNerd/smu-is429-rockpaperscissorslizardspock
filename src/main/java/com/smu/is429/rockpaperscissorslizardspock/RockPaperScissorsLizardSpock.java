@@ -49,7 +49,6 @@ public class RockPaperScissorsLizardSpock {
       // Invoking provided verify service
       Gson gson = new Gson();
       VerifyServiceResponse playerResponse = gson.fromJson(testCode(playerBot, language), VerifyServiceResponse.class);
-      VerifyServiceResponse aiResponse = gson.fromJson(testCode(aiBot.getCode(), aiBot.getLanguage()), VerifyServiceResponse.class);
 
       // Return error message if there is one
       if(playerResponse.getErrors() != null) {
@@ -58,6 +57,8 @@ public class RockPaperScissorsLizardSpock {
         response.setMessage(playerResponse.getErrors());
         return response;     
       }
+
+      VerifyServiceResponse aiResponse = gson.fromJson(testCode(aiBot.getCode(), aiBot.getLanguage()), VerifyServiceResponse.class);
 
       if(aiResponse.getErrors() != null) {
         response = new Response();
@@ -190,7 +191,6 @@ public class RockPaperScissorsLizardSpock {
       // Invoking provided verify service
       Gson gson = new Gson();
       VerifyServiceResponse playerResponse = gson.fromJson(testCode(playerBot.getCode(), playerBot.getLanguage()), VerifyServiceResponse.class);
-      VerifyServiceResponse aiResponse = gson.fromJson(testCode(aiBot.getCode(), aiBot.getLanguage()), VerifyServiceResponse.class);
 
       // Return error message if there is one
       if(playerResponse.getErrors() != null) {
@@ -199,6 +199,8 @@ public class RockPaperScissorsLizardSpock {
         response.setMessage(playerResponse.getErrors());
         return response;      
       }
+
+      VerifyServiceResponse aiResponse = gson.fromJson(testCode(aiBot.getCode(), aiBot.getLanguage()), VerifyServiceResponse.class);
 
       if(aiResponse.getErrors() != null) {
         response = new Response();
