@@ -156,7 +156,7 @@ public class RockPaperScissorsLizardSpock {
         // made public for other users to select
         if (totalScore > 0) {
 
-           gameDAO.updateBotStatus(previousRound.getPlayerBotId(), 1);
+           gameDAO.updateBotStatus(previousRound.getPlayerBotId(), 1, previousRound.getAiBotId());
           
            response = new Response();
            response.setSuccess(true);

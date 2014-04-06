@@ -165,12 +165,13 @@ public class RockPaperScissorsLizardSpockDAO {
   // If player's bot wins, update status
   // of player's bot so that it can be selected
   // from list
-  public void updateBotStatus(int botId, int isVisible) throws SQLException {
+  public void updateBotStatus(int botId, int isVisible, int aiBotId) throws SQLException {
 
-    String statement = "UPDATE bot SET isVisible=? WHERE id=?";
+    String statement = "UPDATE bot SET isVisible=?, level=((SELECT level from bot where id=?) + 1) WHERE id=?";
     PreparedStatement stmt = conn.prepareStatement(statement);
     stmt.setInt(1, isVisible);
-    stmt.setInt(2, botId);
+    stmt.setInt(2, aiBotId),
+    stmt.setInt(3, botId);
 
     int success = stmt.executeUpdate();
 
