@@ -6,13 +6,13 @@ before_script:
 - mysql < database.sql
 - cd ..
 - wget https://commondatastorage.googleapis.com/appengine-sdks/featured/appengine-java-sdk-1.9.2.zip
-- unzip appengine-java-sdk-1.9.1.zip
-- rm appengine-java-sdk-1.9.1.zip
+- unzip appengine-java-sdk-1.9.2.zip
+- rm appengine-java-sdk-1.9.2.zip
 script:
 - cd smu-is429-rockpaperscissorslizardspock
 - mvn test
 after_success:
-- echo $PASSWORD | ../appengine-java-sdk-1.9.1/bin/appcfg.sh --email=$EMAIL --passin update target/rockpaperscissorlizardspock-war-1.0-SNAPSHOT
+- echo $PASSWORD | ../appengine-java-sdk-1.9.2/bin/appcfg.sh --email=$EMAIL --passin update target/rockpaperscissorlizardspock-war-1.0-SNAPSHOT
 env:
   global:
   - secure: OHUFL4cJ3KZx39hZZ/MQcZFU/OsbIjvC4DP4wCg+NwctNQXKMLGAR8K+A10B7QmjrKsMpEOX2+7qsJScgYCkY/VOPEt4//1DzT/OKzhat8XFfudseWUAWG8DOQRg+IRcaUwoqFC0I02XsEwfii0KU4hKkOZ73MZ+eYLipQS9vJM=
