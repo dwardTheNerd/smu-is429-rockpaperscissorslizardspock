@@ -5,7 +5,7 @@ before_script:
 - mysql -e 'DROP DATABASE IF EXISTS is429;'
 - mysql < database.sql
 - cd ..
-- wget https://commondatastorage.googleapis.com/appengine-sdks/featured/appengine-java-sdk-1.9.1.zip
+- wget https://commondatastorage.googleapis.com/appengine-sdks/featured/appengine-java-sdk-1.9.2.zip
 - unzip appengine-java-sdk-1.9.1.zip
 - rm appengine-java-sdk-1.9.1.zip
 script:
