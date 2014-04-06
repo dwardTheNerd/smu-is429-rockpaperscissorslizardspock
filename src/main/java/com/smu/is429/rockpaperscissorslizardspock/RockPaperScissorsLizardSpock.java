@@ -82,16 +82,16 @@ public class RockPaperScissorsLizardSpock {
       int playerBotId = playerBotId = gameDAO.insertBot(playerBotName, playerBot, language);
 
       // Finally we can move on to find out who wins!
-      int hasPlayerWon = judge.hasWon(playerMove, aiMove);
+      int score = judge.hasWon(playerMove, aiMove);
 
       // Last step, we need to insert the new game session into the database
       // Generate a unique id to associate with the game session
       String id = generateID();
-      gameDAO.insertRound(id, playerBotId, aiBot.getId(), 1, playerMove, aiMove, hasPlayerWon);
+      gameDAO.insertRound(id, playerBotId, aiBot.getId(), 1, playerMove, aiMove, score);
 
       response = new Response();
       response.setSuccess(true);
-      response.setGameSession(new GameSession(id, 1, playerBotId, aiBot.getId(), playerMove, aiMove, hasPlayerWon));
+      response.setGameSession(new GameSession(id, 1, playerBotId, aiBot.getId(), playerMove, aiMove, score));
       return response;
       
     } catch(SQLException ex) {
@@ -206,13 +206,13 @@ public class RockPaperScissorsLizardSpock {
       playerMove = Move.valueOf(playerResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").replaceAll("\"", "").trim().toUpperCase());
       aiMove = Move.valueOf(aiResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").replaceAll("\"", "").trim().toUpperCase());
 
-      int hasPlayerWon = judge.hasWon(playerMove, aiMove);
-      gameDAO.insertRound(id, playerBot.getId(), aiBot.getId(), previousRound.getRoundNo() + 1, playerMove, aiMove, hasPlayerWon);
+      int score = judge.hasWon(playerMove, aiMove);
+      gameDAO.insertRound(id, playerBot.getId(), aiBot.getId(), previousRound.getRoundNo() + 1, playerMove, aiMove, score);
 
       // Return appropriate response to player
       response = new Response();
       response.setSuccess(true);
-      response.setGameSession(new GameSession(id, previousRound.getRoundNo() + 1, playerMove, aiMove, hasPlayerWon));
+      response.setGameSession(new GameSession(id, previousRound.getRoundNo() + 1, playerMove, aiMove, score));
       return response;
 
     } catch(SQLException ex) {

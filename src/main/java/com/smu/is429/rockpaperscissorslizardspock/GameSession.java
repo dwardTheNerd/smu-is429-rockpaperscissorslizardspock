@@ -5,25 +5,25 @@ public class GameSession {
   private String id;
   private int roundNo;
   private Move playerMove, aiMove;
-  private int hasPlayerWon;
+  private int score;
   private int playerBotId, aiBotId;
   
-  public GameSession(String id, int roundNo, Move playerMove, Move aiMove, int hasPlayerWon) {
+  public GameSession(String id, int roundNo, Move playerMove, Move aiMove, int score) {
     this.id = id;
     this.roundNo = roundNo;
     this.playerMove = playerMove;
     this.aiMove = aiMove;
-    this.hasPlayerWon = hasPlayerWon;
+    this.score = score;
   }
 
-  public GameSession(String id, int roundNo, int playerBotId, int aiBotId, Move playerMove, Move aiMove, int hasPlayerWon) {
+  public GameSession(String id, int roundNo, int playerBotId, int aiBotId, Move playerMove, Move aiMove, int score) {
     this.id = id;
     this.roundNo = roundNo;
     this.playerBotId = playerBotId;
     this.aiBotId = aiBotId;
     this.playerMove = playerMove;
     this.aiMove = aiMove;
-    this.hasPlayerWon = hasPlayerWon;
+    this.score = score;
   }  
 
   public String getId() {
@@ -52,6 +52,10 @@ public class GameSession {
 
   public int getAiBotId() {
     return aiBotId;
+  }
+
+  public int getScore() {
+    return score;
   }
 
 }

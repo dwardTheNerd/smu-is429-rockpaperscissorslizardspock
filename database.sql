@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS bot (
   name VARCHAR(20) NOT NULL,
   code TEXT NOT NULL,
   language ENUM('JAVASCRIPT', 'PYTHON', 'RUBY') NOT NULL,
-  hasWon TINYINT(1) NOT NULL,
+  isVisible TINYINT(1) NOT NULL,
   level INT UNSIGNED NULL,
   PRIMARY KEY(id)
 );
@@ -19,10 +19,10 @@ CREATE TABLE IF NOT EXISTS game_session (
   roundNo TINYINT(2) NOT NULL,
   playerMove ENUM('ROCK', 'PAPER', 'SCISSORS', 'LIZARD', 'SPOCK') NOT NULL,
   aiMove ENUM('ROCK', 'PAPER', 'SCISSORS', 'LIZARD', 'SPOCK') NOT NULL,
-  hasPlayerWon TINYINT(1) NOT NULL,
+  score TINYINT(1) NOT NULL,
   PRIMARY KEY(id, roundNo),
   FOREIGN KEY(playerBotId) REFERENCES bot(id),
   FOREIGN KEY(aiBotId) REFERENCES bot(id)
 );
 
-INSERT INTO bot(name, code, language, hasWon) VALUES('Stupid Bot', 'def play_game():\\n return \'ROCK\'', 'PYTHON', 1);
+INSERT INTO bot(name, code, language, isVisible, level) VALUES('Stupid Bot', 'def play_game():\\n return \'ROCK\'', 'PYTHON', 1, 0);

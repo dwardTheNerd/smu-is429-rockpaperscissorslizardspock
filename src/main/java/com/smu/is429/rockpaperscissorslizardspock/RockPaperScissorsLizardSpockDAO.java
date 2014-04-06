@@ -38,7 +38,7 @@ public class RockPaperScissorsLizardSpockDAO {
 
   public int insertBot(String name, String bot, Language language) throws SQLException {
 
-    String statement = "INSERT INTO bot (name, code, language, hasWon) VALUES(?, ?, ?, 0)";
+    String statement = "INSERT INTO bot (name, code, language, isVisible) VALUES(?, ?, ?, 0)";
     PreparedStatement stmt = conn.prepareStatement(statement, Statement.RETURN_GENERATED_KEYS);
     stmt.setString(1, name);
     stmt.setString(2, bot);
@@ -88,7 +88,7 @@ public class RockPaperScissorsLizardSpockDAO {
 
     ArrayList<Bot> bots = new ArrayList<Bot>();
 
-    String statement = "SELECT * FROM bot WHERE hasWon=1";
+    String statement = "SELECT * FROM bot WHERE isVisible=1";
     PreparedStatement stmt = conn.prepareStatement(statement);
 
     ResultSet rs = stmt.executeQuery();
@@ -100,7 +100,7 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
 
-  public void insertRound(String id, int playerBotId, int aiBotId, int roundNo, Move playerMove, Move aiMove, int hasPlayerWon) throws SQLException {
+  public void insertRound(String id, int playerBotId, int aiBotId, int roundNo, Move playerMove, Move aiMove, int score) throws SQLException {
 
     // Creating a new game is basically just inserting the very first round of
     // the game into database. More tedious because there is no existing value
@@ -113,7 +113,7 @@ public class RockPaperScissorsLizardSpockDAO {
     stmt.setInt(4, roundNo);
     stmt.setString(5, playerMove.name());
     stmt.setString(6, aiMove.name());
-    stmt.setInt(7, hasPlayerWon);
+    stmt.setInt(7, score);
 
     int success = stmt.executeUpdate();
 
@@ -134,7 +134,7 @@ public class RockPaperScissorsLizardSpockDAO {
     ResultSet rs = stmt.executeQuery();
     GameSession session = null;
     while(rs.next()) {
-      session = new GameSession(rs.getString("id"), rs.getInt("roundNo"), rs.getInt("playerBotId"), rs.getInt("aiBotId"), Move.valueOf(rs.getString("playerMove")), Move.valueOf(rs.getString("aiMove")), rs.getInt("hasPlayerWon"));
+      session = new GameSession(rs.getString("id"), rs.getInt("roundNo"), rs.getInt("playerBotId"), rs.getInt("aiBotId"), Move.valueOf(rs.getString("playerMove")), Move.valueOf(rs.getString("aiMove")), rs.getInt("score"));
     }
 
     rs.close();
@@ -154,7 +154,7 @@ public class RockPaperScissorsLizardSpockDAO {
     ArrayList<GameSession> sessions = new ArrayList<GameSession>();
     while(rs.next()) {
 
-      sessions.add(new GameSession(rs.getString("id"), rs.getInt("roundNo"), rs.getInt("playerBotId"), rs.getInt("aiBotId"), Move.valueOf(rs.getString("playerMove")), Move.valueOf(rs.getString("aiMove")), rs.getInt("hasPlayerWon")));
+      sessions.add(new GameSession(rs.getString("id"), rs.getInt("roundNo"), rs.getInt("playerBotId"), rs.getInt("aiBotId"), Move.valueOf(rs.getString("playerMove")), Move.valueOf(rs.getString("aiMove")), rs.getInt("score")));
 
     }
     
@@ -165,11 +165,11 @@ public class RockPaperScissorsLizardSpockDAO {
   // If player's bot wins, update status
   // of player's bot so that it can be selected
   // from list
-  public void updateBotStatus(int botId, int hasWon) throws SQLException {
+  public void updateBotStatus(int botId, int isVisible) throws SQLException {
 
-    String statement = "UPDATE bot SET hasWon=? WHERE id=?";
+    String statement = "UPDATE bot SET isVisible=? WHERE id=?";
     PreparedStatement stmt = conn.prepareStatement(statement);
-    stmt.setInt(1, hasWon);
+    stmt.setInt(1, isVisible);
     stmt.setInt(2, botId);
 
     int success = stmt.executeUpdate();
@@ -182,7 +182,7 @@ public class RockPaperScissorsLizardSpockDAO {
   
   public int getGameScore(String gameId) throws SQLException {
    
-    String statement = "SELECT SUM(hasPlayerWon) AS 'result' FROM game_session WHERE id=?";
+    String statement = "SELECT SUM(score) AS 'result' FROM game_session WHERE id=?";
     PreparedStatement stmt = conn.prepareStatement(statement);
     stmt.setString(1, gameId);
     
