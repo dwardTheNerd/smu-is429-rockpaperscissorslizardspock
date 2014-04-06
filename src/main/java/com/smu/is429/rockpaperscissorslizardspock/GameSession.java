@@ -42,8 +42,8 @@ public class GameSession {
     return aiMove;
   }
 
-  public int getHasPlayerWon() {
-    return hasPlayerWon;
+  public int getScore() {
+    return score;
   }
 
   public int getPlayerBotId() {
@@ -52,10 +52,6 @@ public class GameSession {
 
   public int getAiBotId() {
     return aiBotId;
-  }
-
-  public int getScore() {
-    return score;
   }
 
 }
