@@ -25,4 +25,16 @@ CREATE TABLE IF NOT EXISTS game_session (
   FOREIGN KEY(aiBotId) REFERENCES bot(id)
 );
 
+CREATE TABLE IF NOT EXISTS bot_stats (
+  id INT NOT NULL AUTO_INCREMENT,
+  botId INT NOT NULL,
+  gameId VARCHAR(36) NOT NULL,
+  win INT DEFAULT 0,
+  draw INT DEFAULT 0,
+  loss INT DEFAULT 0,
+  PRIMARY KEY(id),
+  FOREIGN KEY(botId) REFERENCES bot(id),
+  FOREIGN KEY(gameId) REFERENCES game_session(id)
+);
+
 INSERT INTO bot(name, code, language, isVisible, level) VALUES('Stupid Bot', 'def play_game():\\n return \'ROCK\'', 'PYTHON', 1, 0);

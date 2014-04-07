@@ -210,6 +210,26 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
   
+  public void updateBotStatistics(int botId, String gameId, int win, int draw, int loss) throws SQLException {
+
+    String statement = "INSERT INTO bot_stats (botId, gameId, win, draw, loss) VALUES (?, ?, ?, ?, ?)";
+    PreparedStatement stmt = conn.prepareStatement(statement);
+    stmt.setInt(1, botId);
+    stmt.setString(2, gameId);
+    stmt.setInt(3, win);
+    stmt.setInt(4, draw);
+    stmt.setInt(5, loss);
+
+    int success = stmt.executeUpdate();
+
+    if(success == 0) {
+      throw new SQLException("Failure updating bot statistics in database.");
+    }
+
+    stmt.close();
+
+  }
+
   public int getTotalScore(String gameId) throws SQLException {
    
     String statement = "SELECT SUM(score) AS 'result' FROM game_session WHERE id=?";
