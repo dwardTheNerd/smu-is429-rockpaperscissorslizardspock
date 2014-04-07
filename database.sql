@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS bot (
   language ENUM('JAVASCRIPT', 'PYTHON', 'RUBY') NOT NULL,
   isVisible TINYINT(1) NOT NULL,
   level INT DEFAULT -1,
+  userid varchar(100) NULL,
   PRIMARY KEY(id)
 );
 
@@ -34,6 +35,12 @@ CREATE TABLE IF NOT EXISTS bot_stats (
   elo_rating INT DEFAULT 1400,
   PRIMARY KEY(id),
   FOREIGN KEY(botId) REFERENCES bot(id)
+);
+
+CREATE TABLE IF NOT EXISTS user (
+  id INT NOT NULL AUTO_INCREMENT,
+  userid varchar(100) NOT NULL,
+  PRIMARY KEY(id)
 );
 
 INSERT INTO bot(id, name, code, language, isVisible, level) VALUES(1, 'Stupid Bot 1', 'def play_game():\\n return \'ROCK\'', 'PYTHON', 1, 0);

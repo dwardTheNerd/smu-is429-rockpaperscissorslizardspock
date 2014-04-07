@@ -354,6 +354,9 @@ public class RockPaperScissorsLizardSpockDAO {
     
   }
   
+  // Get top 10 base on ELO rating
+  
+  // Get list of user bots
   public void close() throws SQLException {
     conn.close();
   }
