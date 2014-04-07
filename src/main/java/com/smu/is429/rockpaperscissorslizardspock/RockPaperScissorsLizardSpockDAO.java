@@ -65,7 +65,7 @@ public class RockPaperScissorsLizardSpockDAO {
 
   public Bot getBot(int id) throws SQLException {
 
-    String statement  = "SELECT * FROM bot WHERE id=?";
+    String statement  = "SELECT * FROM bot LEFT JOIN bot_stats ON bot_stats.botId = bot.id WHERE id=?";
     PreparedStatement stmt = conn.prepareStatement(statement);
     stmt.setInt(1, id);
 
@@ -210,29 +210,56 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
   
-  public void updateBotStatistics(int botId, String gameId, int win, int draw, int loss) throws SQLException {
+  public void updateBotStatistics(int botId, int win, int draw, int loss, int elo) throws SQLException {
 
-    String statement = "INSERT INTO bot_stats (botId, gameId, win, draw, loss) VALUES (?, ?, ?, ?, ?)";
+    String statement = "SELECT COUNT(*) AS 'count' FROM bot_stats WHERE botId=?";
     PreparedStatement stmt = conn.prepareStatement(statement);
-    stmt.setInt(1, botId);
-    stmt.setString(2, gameId);
-    stmt.setInt(3, win);
-    stmt.setInt(4, draw);
-    stmt.setInt(5, loss);
+    stmt.setInt(botId);
+    
+    ResultSet rs = stmt.executeQuery();
+    int count = 0;
+    while(rs.next()) {
+      count = rs.getInt("count");
+    }
+    
+    rs.close();
+    stmt.close();
+    
+    if(count == 1) {
+      
+      statement = "UPDATE bot_stats SET win=?, draw=?, loss=?, elo_rating=? WHERE botId=?";      
+      stmt = conn.prepareStatement(statement);
+      stmt.setInt(1, win);
+      stmt.setInt(2, draw);
+      stmt.setInt(3, loss);
+      stmt.setInt(4, elo);
+      stmt.setInt(5, botId);
+      
+    } else {
+     
+      statement = "INSERT INTO bot_stats (botId, win, draw, loss, elo_rating) VALUES (?, ?, ?, ?, ?, ?)";
+      stmt = conn.prepareStatement(statement);
+      stmt.setInt(1, botId);
+      stmt.setInt(2, win);
+      stmt.setInt(3, draw);
+      stmt.setInt(4, loss);
+      stmt.setInt(5, elo);
+      
+    }
 
     int success = stmt.executeUpdate();
 
     if(success == 0) {
       throw new SQLException("Failure updating bot statistics in database.");
     }
-
+    
     stmt.close();
 
   }
 
   public Bot getBotStatistics(int botId) throws SQLException {
 
-    String statement = "SELECT botId, name, language, level, SUM(win) AS 'win', SUM(draw) AS 'draw', SUM(loss) AS 'loss' FROM bot_stats RIGHT JOIN bot on bot.id=bot_stats.botId WHERE botId=? GROUP BY botId, name, language, level";
+    String statement = "SELECT botId, name, language, level, win, draw, loss, elo_rating FROM bot_stats RIGHT JOIN bot on bot.id=bot_stats.botId WHERE botId=?";
     PreparedStatement stmt = conn.prepareStatement(statement);
     stmt.setInt(1, botId);
 

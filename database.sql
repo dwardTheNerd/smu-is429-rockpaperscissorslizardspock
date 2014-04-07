@@ -28,13 +28,12 @@ CREATE TABLE IF NOT EXISTS game_session (
 CREATE TABLE IF NOT EXISTS bot_stats (
   id INT NOT NULL AUTO_INCREMENT,
   botId INT NOT NULL,
-  gameId VARCHAR(36) NOT NULL,
   win TINYINT UNSIGNED DEFAULT 0,
   draw TINYINT UNSIGNED DEFAULT 0,
   loss TINYINT UNSIGNED DEFAULT 0,
+  elo_rating INT DEFAULT 1400,
   PRIMARY KEY(id),
-  FOREIGN KEY(botId) REFERENCES bot(id),
-  FOREIGN KEY(gameId) REFERENCES game_session(id)
+  FOREIGN KEY(botId) REFERENCES bot(id)
 );
 
 INSERT INTO bot(name, code, language, isVisible, level) VALUES('Stupid Bot 1', 'def play_game():\\n return \'ROCK\'', 'PYTHON', 1, 0);
