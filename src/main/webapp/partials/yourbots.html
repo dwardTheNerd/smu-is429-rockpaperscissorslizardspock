@@ -15,6 +15,9 @@
 								<option value="">Select...</option>						
 							</select>
 						</div>
+						<div id="codes">
+							
+						</div>
 					</div>
 				</div>
 			</div>
@@ -28,9 +31,10 @@
 					
 					<div class="widget-content">
 						<div align="center">
-							<canvas id="canvas" height="300" width="400"></canvas>
+							<h4><label id="header">Select a bot to see its statistics!</label></h4>
+							<canvas id="canvas" height="300" width="400" style="display: none"></canvas>
 							<br/>
-							<h4>Bot Rating : 1400</h4>
+							<h4><label id="rating"></label></h4>
 						</div>
 					</div>
 				</div>
@@ -40,17 +44,88 @@
 </div>
 
 <script>
-
-		var barChartData = {
-			labels : ["Win","Draw","Lose"],
-			datasets : [
-				{
-					fillColor : "rgba(220,220,220,0.5)",
-					strokeColor : "rgba(220,220,220,1)",
-					data : [10,20,10]
+	var bots = [];
+	var userId = {};
+	userId.userId = document.getElementById('userid').value;
+	
+	function init() {
+		var callback = function() {
+			getBotsByUser();
+		};
+		
+		gapi.client.load('rockpaperscissorslizardspock', 'v1', callback, 'https://smu-is429-group-project.appspot.com/_ah/api');
+	}
+	
+	function getBotsByUser() {
+		gapi.client.rockpaperscissorslizardspock.getBotsByUser(userId).execute(function(resp) {
+			if(!resp.code) {
+				var result = "<option value='select'>Select...</option>";
+				resp.items = resp.items || [];
+				console.log(resp.items);
+				for (var i=0; i<resp.items.length;i++){
+					result += "<option value ='"+resp.items[i].id+"'>"+resp.items[i].name+"</option>";
+					temp = [];
+					temp.push(resp.items[i].id);
+					temp.push(resp.items[i].name);
+					temp.push(resp.items[i].code);
+					temp.push(resp.items[i].language);
+					temp.push(resp.items[i].level);
+					temp.push(resp.items[i].winCount);
+					temp.push(resp.items[i].drawCount);
+					temp.push(resp.items[i].lossCount);
+					temp.push(resp.items[i].elo);
+					bots.push(temp);
 				}
-			]
-		}
+				document.getElementById('bot').innerHTML = result;
+			}
+		});
+	}
+	
+	$('#bot').change(function() {
+		if($(this).val() === "select") {
+			document.getElementById('header').innerHTML = "Select a bot to see its statistics!";
+			document.getElementById("canvas").style.display="none";
+			document.getElementById('rating').style.display="none";
+		} else {
+			for (var i=0; i < bots.length; i++) {
+				if(bots[i][0] === parseInt($(this).val())){
+					document.getElementById('header').innerHTML = bots[i][1];
+					document.getElementById('rating').style.display="block";
+					document.getElementById('rating').innerHTML = "Bot Rating: " + bots[i][8];
+					
+					var table = "<table><tr><td>Language: </td><td>"+bots[i][3]+"</td></tr><tr><td>Code:</td><td><textarea rows='4'>"+bots[i][2].replace("\\n","&#10;")+"</textarea></td></tr></table>";
+					document.getElementById('codes').innerHTML = table;
+					
+					var d = [bots[i][5],bots[i][6],bots[i][7]];
+					
+					if(bots[i][5] === 0 && bots[i][6] === 0 && bots[i][7] === 0) {
+						document.getElementById("header").innerHTML = bots[i][1] + " has not been challenged!";
+						break;
+					} else {
+						var barChartData = {
+							labels : ["Win","Draw","Lose"],
+							datasets : [
+								{
+									fillColor : "rgba(220,220,220,0.5)",
+									strokeColor : "rgba(220,220,220,1)",
+									data : d
+								}
+							]
+						}
 
-	var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Bar(barChartData);
-	</script>
+						var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Bar(barChartData);
+						document.getElementById("canvas").style.display="block";
+						break;
+					}
+				}
+			}
+		}
+	});
+	
+	(function() {
+	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	po.src = 'https://apis.google.com/js/plusone.js?onload=onLoadCallback';
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+	})();
+</script>
+<script src="https://apis.google.com/js/client.js?onload=init"></script>

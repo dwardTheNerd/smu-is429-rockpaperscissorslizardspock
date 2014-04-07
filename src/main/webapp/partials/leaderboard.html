@@ -9,22 +9,10 @@
 					</div>
 					
 					<div class="widget-content">
-						Current Top 5 Bots to Beat!<br/>
-						<a href="" class="list-group-item">
-							<span class="badge">1400</span>&nbsp;&nbsp;Bot Name
-						</a><br/>
-						<a href="" class="list-group-item">
-							<span class="badge">1400</span>&nbsp;&nbsp;Bot Name
-						</a><br/>
-						<a href="" class="list-group-item">
-							<span class="badge">1400</span>&nbsp;&nbsp;Bot Name
-						</a><br/>
-						<a href="" class="list-group-item">
-							<span class="badge">1400</span>&nbsp;&nbsp;Bot Name
-						</a><br/>
-						<a href="" class="list-group-item">
-							<span class="badge">1400</span>&nbsp;&nbsp;Bot Name
-						</a>
+						Current Top 10 Bots to Beat!<br/><br/>
+						<div id="topTenBots">
+							
+						</div>
 					</div>
 				</div>
 			</div>
@@ -38,9 +26,10 @@
 					
 					<div class="widget-content">
 						<div align="center">
-							<canvas id="canvas" height="300" width="400"></canvas>
+							<h4><label id="header">Select a bot to see its statistics!</label></h4>
+							<canvas id="canvas" height="300" width="400" style="display: none"></canvas>
 							<br/>
-							<h4>Bot Rating : 1400</h4>
+							<h4><label id="rating"></label></h4>
 						</div>
 					</div>
 				</div>
@@ -50,17 +39,76 @@
 </div>
 
 <script>
-
-		var barChartData = {
-			labels : ["Win","Draw","Lose"],
-			datasets : [
-				{
-					fillColor : "rgba(220,220,220,0.5)",
-					strokeColor : "rgba(220,220,220,1)",
-					data : [10,20,10]
+	var topTenBots = [];
+	
+	function init() {
+		var callback = function() {
+			getTopTenBots();
+		};
+		
+		gapi.client.load('rockpaperscissorslizardspock', 'v1', callback, 'https://smu-is429-group-project.appspot.com/_ah/api');
+	}
+	
+	function getTopTenBots() {
+		gapi.client.rockpaperscissorslizardspock.getTopTenBots().execute(function(resp) {
+			if(!resp.code) {
+				var result = "";
+				resp.items = resp.items || [];
+				for (var i=0; i<resp.items.length;i++){
+					result += "<a class='list-group-item' onclick='showStats("+resp.items[i].id+")'><span class='badge'>"+resp.items[i].elo+"</span>&nbsp;&nbsp;"+resp.items[i].name+"</a><br/>";
+					temp = [];
+					temp.push(resp.items[i].id);
+					temp.push(resp.items[i].name);
+					temp.push(resp.items[i].code);
+					temp.push(resp.items[i].language);
+					temp.push(resp.items[i].level);
+					temp.push(resp.items[i].winCount);
+					temp.push(resp.items[i].drawCount);
+					temp.push(resp.items[i].lossCount);
+					temp.push(resp.items[i].elo);
+					topTenBots.push(temp);
 				}
-			]
-		}
+				document.getElementById('topTenBots').innerHTML = result;
+			}
+		});
+	}
+	
+	function showStats(id) {
+		
+		for (var i=0; i < topTenBots.length; i++) {
+			if(topTenBots[i][0] === parseInt(id)) {
+				document.getElementById('header').innerHTML = topTenBots[i][1];
+				document.getElementById('rating').innerHTML = "Bot Rating: " + topTenBots[i][8];
+				
+				var d = [topTenBots[i][5],topTenBots[i][6],topTenBots[i][7]];
+				
+				if(topTenBots[i][5] === 0 && topTenBots[i][6] === 0 && topTenBots[i][7] === 0) {
+					document.getElementById("header").innerHTML = topTenBots[i][1] + " has not been challenged!";
+					break;
+				} else {
+					var barChartData = {
+						labels : ["Win","Draw","Lose"],
+						datasets : [
+							{
+								fillColor : "rgba(220,220,220,0.5)",
+								strokeColor : "rgba(220,220,220,1)",
+								data : d
+							}
+						]
+					}
 
-	var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Bar(barChartData);
-	</script>
+					var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Bar(barChartData);
+					document.getElementById("canvas").style.display="block";
+					break;
+				}
+			}
+		}
+	}
+	
+	(function() {
+	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	po.src = 'https://apis.google.com/js/plusone.js?onload=onLoadCallback';
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+	})();
+</script>
+<script src="https://apis.google.com/js/client.js?onload=init"></script>
