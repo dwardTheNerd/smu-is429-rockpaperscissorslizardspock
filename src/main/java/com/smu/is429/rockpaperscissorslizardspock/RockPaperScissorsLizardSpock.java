@@ -444,6 +444,58 @@ public class RockPaperScissorsLizardSpock {
     
   }
 
+  @ApiMethod(name="getBotStatistics", path="getBotStatistics")
+  public Response getBotStatistics(@Named("botId") int id) {
+
+    RockPaperScissorsLizardSpockDAO gameDAO = null;
+    Response response = null;
+
+    try {
+
+      gameDAO = new RockPaperScissorsLizardSpockDAO();
+      Bot bot = gameDAO.getBotStatistics(id);
+
+      response = new Response();
+      response.setSuccess(true);
+      response.setBot(bot);
+      return response;
+
+    } catch(SQLException ex) {
+
+      response = new Response();
+      response.setSuccess(false);
+      response.setMessage(ex.getMessage());
+      return response;
+
+    } catch(Exception ex) {
+
+      response = new Response();
+      response.setSuccess(false);
+      response.setMessage(ex.getMessage());
+      return response;
+
+    } finally {
+
+      if(gameDAO != null) {
+
+        try {
+          gameDAO.close();
+          gameDAO = null;
+        } catch(SQLException ex) {
+          
+          response = new Response();
+          response.setSuccess(false);
+          response.setMessage(ex.getMessage());
+          return response;
+
+        }
+
+      }
+
+    }
+
+  }
+
   private String testCode(String code, Language language) {
 
     String urlString = "http://162.222.183.53/";

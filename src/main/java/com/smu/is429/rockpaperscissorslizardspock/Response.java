@@ -6,11 +6,16 @@ public class Response {
   private String message;
   private GameSession gameSession;
   private int totalScore;
-  
+  private Bot bot;
+
   public Response() {
     this.success = false;
   }
   
+  public void setBot(Bot bot) {
+    this.bot = bot;
+  }
+
   public void setSuccess(boolean success) {
     this.success = success;
   }
@@ -37,6 +42,10 @@ public class Response {
   
   public GameSession getGameSession() {
     return gameSession;
+  }
+
+  public Bot getBot() {
+    return bot;
   }
 
   public int getTotalScore() {

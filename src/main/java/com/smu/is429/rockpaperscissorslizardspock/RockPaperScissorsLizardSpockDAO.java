@@ -230,6 +230,27 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
 
+  public Bot getBotStatistics(int botId) throws SQLException {
+
+    String statement = "SELECT botId, name, language, level, SUM(win) AS 'win', SUM(draw) AS 'draw', SUM(loss) AS 'loss' FROM bot_stats WHERE botId=? RIGHT JOIN bot ON bot.id=bot_stats.botId GROUP BY botId, name, language, level";
+    PreparedStatement stmt = conn.prepareStatement(statement);
+    stmt.setInt(1, botId);
+
+    ResultSet rs = stmt.executeQuery();
+    Bot bot = null;
+    while(rs.next()) {
+
+      bot = new Bot(rs.getInt("botId"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("level"), rs.getInt("win"), rs.getInt("loss"), rs.getInt("draw"));
+
+    }
+
+    rs.close();
+    stmt.close();
+
+    return bot;
+
+  }
+
   public int getTotalScore(String gameId) throws SQLException {
    
     String statement = "SELECT SUM(score) AS 'result' FROM game_session WHERE id=?";
