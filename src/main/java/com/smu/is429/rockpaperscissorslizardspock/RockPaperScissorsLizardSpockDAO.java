@@ -267,7 +267,7 @@ public class RockPaperScissorsLizardSpockDAO {
     Bot bot = null;
     while(rs.next()) {
 
-      bot = new Bot(rs.getInt("botId"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("level"), rs.getInt("win"), rs.getInt("loss"), rs.getInt("draw"));
+      bot = new Bot(rs.getInt("botId"), rs.getString("name"), Language.valueOf(rs.getString("language")), rs.getInt("level"), rs.getInt("win"), rs.getInt("loss"), rs.getInt("draw"));
 
     }
 
