@@ -129,14 +129,14 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
 
-  public int insertBot(String name, String bot, Language language, String userid) throws SQLException {
+  public int insertBot(String name, String bot, Language language, int userId) throws SQLException {
 
     String statement = "INSERT INTO bot (name, code, language, isVisible, userid) VALUES(?, ?, ?, 0, ?)";
     PreparedStatement stmt = conn.prepareStatement(statement, Statement.RETURN_GENERATED_KEYS);
     stmt.setString(1, name);
     stmt.setString(2, bot);
     stmt.setString(3, language.name());
-    stmt.setString(4, userid);
+    stmt.setInt(4, userId);
     
     int success = stmt.executeUpdate();
 

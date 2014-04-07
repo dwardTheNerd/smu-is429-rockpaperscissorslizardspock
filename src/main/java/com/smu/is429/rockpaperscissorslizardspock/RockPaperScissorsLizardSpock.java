@@ -31,7 +31,7 @@ public class RockPaperScissorsLizardSpock {
 
   // Start a new game
   @ApiMethod(name="newGame", path="newGame")
-  public Response newGame(@Named("playerBotName") String playerBotName, @Named("playerBotCode") String playerBot, @Named("aiBotId") int aiBotId, @Named("language") Language language) {
+  public Response newGame(@Named("playerBotName") String playerBotName, @Named("playerBotCode") String playerBot, @Named("aiBotId") int aiBotId, @Named("language") Language language, @Named("userId") String userId) {
 
     // Need to decode code first before we can process it
     playerBot = URLDecoder.decode(playerBot);
@@ -78,9 +78,27 @@ public class RockPaperScissorsLizardSpock {
       playerMove = Move.valueOf(playerResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").replaceAll("\"", "").trim().toUpperCase());
       aiMove = Move.valueOf(aiResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").replaceAll("\"", "").trim().toUpperCase());
 
+
       // At this stage, player's bot has been thoroughly validated.
       // Now we can insert player's bot code into database
-      int playerBotId = playerBotId = gameDAO.insertBot(playerBotName, playerBot, language);
+      // However, we need to determine if user logged in to play the game
+      // if userid is not "null", then we create a bot and loosely link it
+      // to userid
+      int playerBotId;
+      if(userId.equals("null")) {
+
+        playerBotId = playerBotId = gameDAO.insertBot(playerBotName, playerBot, language);
+
+      } else {
+
+        // Insert user into database
+        // the inserPlayer() method will check if a user is already recorded in the database so it
+        // will not create duplicate rows
+        int userRowId = gameDAO.insertUser(userId);
+
+        playerBotId = playerBotId = gameDAO.insertBot(playerBotName, playerBot, language, userRowId);
+
+      }
 
       // Finally we can move on to find out who wins!
       int score = judge.hasWon(playerMove, aiMove);

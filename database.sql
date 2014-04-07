@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS bot (
   language ENUM('JAVASCRIPT', 'PYTHON', 'RUBY') NOT NULL,
   isVisible TINYINT(1) NOT NULL,
   level INT DEFAULT -1,
-  userid varchar(100) NULL,
+  userId INT NULL,
   PRIMARY KEY(id)
 );
 
