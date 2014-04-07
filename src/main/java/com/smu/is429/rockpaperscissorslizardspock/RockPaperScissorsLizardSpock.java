@@ -46,38 +46,9 @@ public class RockPaperScissorsLizardSpock {
       gameDAO = new RockPaperScissorsLizardSpockDAO();
       Bot aiBot = gameDAO.getBot(aiBotId);
       
-      // Invoking provided verify service
-      Gson gson = new Gson();
-      VerifyServiceResponse playerResponse = gson.fromJson(testCode(playerBot, language), VerifyServiceResponse.class);
-
-      // Return error message if there is one
-      if(playerResponse.getErrors() != null) {
-        response = new Response();
-        response.setSuccess(false);
-        response.setMessage(playerResponse.getErrors());
-        return response;     
-      }
-
-      VerifyServiceResponse aiResponse = gson.fromJson(testCode(aiBot.getCode(), aiBot.getLanguage()), VerifyServiceResponse.class);
-
-      if(aiResponse.getErrors() != null) {
-        response = new Response();
-        response.setSuccess(false);
-        response.setMessage(aiResponse.getErrors());
-        return response;      
-      }
-
-      // No errors with code at this point so we proceed!
-      // Next up we need to validate the moves made by the bots
-
-      Move playerMove, aiMove = null;
-
-      // Because we are using enum to specify the valid moves, if player or ai bot method return a value
-      // that is not inside our specified values in enum, it will throw an exception.
-      // And just in case the move returned is not in uppercase and/or it possess other extra characters, we strip it
-      playerMove = Move.valueOf(playerResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").replaceAll("\"", "").trim().toUpperCase());
-      aiMove = Move.valueOf(aiResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").replaceAll("\"", "").trim().toUpperCase());
-
+      // Run code through verifier service to get move
+      Move playerMove = runCode(playerBot, language);
+      Move aiMove = runCode(aiBot.getCode(), aiBot.getLanguage());
 
       // At this stage, player's bot has been thoroughly validated.
       // Now we can insert player's bot code into database
@@ -204,31 +175,9 @@ public class RockPaperScissorsLizardSpock {
       Bot playerBot = gameDAO.getBot(previousRound.getPlayerBotId());
       Bot aiBot = gameDAO.getBot(previousRound.getAiBotId());
 
-      // Invoking provided verify service
-      Gson gson = new Gson();
-      VerifyServiceResponse playerResponse = gson.fromJson(testCode(playerBot.getCode(), playerBot.getLanguage()), VerifyServiceResponse.class);
-
-      // Return error message if there is one
-      if(playerResponse.getErrors() != null) {
-        response = new Response();
-        response.setSuccess(false);
-        response.setMessage(playerResponse.getErrors());
-        return response;      
-      }
-
-      VerifyServiceResponse aiResponse = gson.fromJson(testCode(aiBot.getCode(), aiBot.getLanguage()), VerifyServiceResponse.class);
-
-      if(aiResponse.getErrors() != null) {
-        response = new Response();
-        response.setSuccess(false);
-        response.setMessage(aiResponse.getErrors());
-        return response;     
-      }
-
-      Move playerMove, aiMove = null;
-
-      playerMove = Move.valueOf(playerResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").replaceAll("\"", "").trim().toUpperCase());
-      aiMove = Move.valueOf(aiResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").replaceAll("\"", "").trim().toUpperCase());
+      // Run code to get move
+      Move playerMove = runCode(playerBot.getCode(), playerBot.getLanguage());
+      Move aiMove = runCode(aiBot.getCode(), aiBot.getLanguage());
 
       int score = judge.hasWon(playerMove, aiMove);
       gameDAO.insertRound(id, playerBot.getId(), aiBot.getId(), previousRound.getRoundNo() + 1, playerMove, aiMove, score);
@@ -554,7 +503,7 @@ public class RockPaperScissorsLizardSpock {
     
   }
   
-  private String testCode(String code, Language language) {
+  private Move runCode(String code, Language language) throws Exception {
 
     String urlString = "http://162.222.183.53/";
     String parameters = "jsonrequest=";
@@ -580,28 +529,27 @@ public class RockPaperScissorsLizardSpock {
 
     }
 
-    try {
+    URL url = new URL(urlString);
+    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-      URL url = new URL(urlString);
-      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    // Configuring request header
+    conn.setRequestMethod("POST");
+    conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+    conn.setRequestProperty("Content-Length", Integer.toString(parameters.length()));
 
-      // Configuring request header
-      conn.setRequestMethod("POST");
-      conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-      conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-      conn.setRequestProperty("Content-Length", Integer.toString(parameters.length()));
+    // Send post request
+    conn.setDoInput(true);
+    conn.setDoOutput(true);
+    DataOutputStream output = new DataOutputStream(conn.getOutputStream());
+    output.writeBytes(parameters);
+    output.flush();
+    output.close();
 
-      // Send post request
-     conn.setDoInput(true);
-     conn.setDoOutput(true);
-     DataOutputStream output = new DataOutputStream(conn.getOutputStream());
-     output.writeBytes(parameters);
-     output.flush();
-     output.close();
+    int responseCode = conn.getResponseCode();
+    String verifierResponseString;
 
-     int responseCode = conn.getResponseCode();
-
-     switch(responseCode) {
+    switch(responseCode) {
 
       case 200:
       case 201:
@@ -612,15 +560,27 @@ public class RockPaperScissorsLizardSpock {
           sb.append(line + "\n");
         }
         br.close();
-        return sb.toString();
+        verifierResponseString = sb.toString();
+        break;
       default:
-        return "{'errors':'Unable to verify code now. Please try again.'}";
+        throw new Exception("Unable to verify code now. Please try again.");
 
      }
 
-    } catch(Exception ex) {
-      return "{'errors':'" + ex.getMessage() + "'}";
+    Gson gson = new Gson();
+    VerifyServiceResponse verifierResponse = gson.fromJson(verifierResponseString, VerifyServiceResponse.class);
+
+    // throw error message if there is one
+    if(verifierResponse.getErrors() != null) {
+      throw new Exception(verifierResponse.getErrors());
     }
+
+    // Because we are using enum to specify the valid moves, if player or ai bot method return a value
+    // that is not inside our specified values in enum, it will throw an exception.
+    // And just in case the move returned is not in uppercase and/or it possess other extra characters, we strip it
+    Move move = Move.valueOf(verifierResponse.getResults()[0].getReceived().replaceAll("[\\[\\]]", "").replaceAll("\"", "").trim().toUpperCase());
+
+    return move;
 
   }
 

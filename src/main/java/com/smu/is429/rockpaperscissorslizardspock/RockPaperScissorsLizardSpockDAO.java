@@ -223,7 +223,7 @@ public class RockPaperScissorsLizardSpockDAO {
 
     ArrayList<Bot> bots = new ArrayList<Bot>();
 
-    String statement = "SELECT bot.id, bot.name, bot.language, bot.code, bot.language, bot.level, bot_stats.win, bot_stats.loss, bot_stats.draw, bot_stats.elo_rating FROM bot LEFT JOIN bot_stats ON bot_stats.botId = bot.id LEFT JOIN user ON user.id=bot.userId WHERE isVisible=1 AND user.userid=?";
+    String statement = "SELECT bot.id, bot.name, bot.language, bot.code, bot.language, bot.level, bot_stats.win, bot_stats.loss, bot_stats.draw, bot_stats.elo_rating FROM bot LEFT JOIN bot_stats ON bot_stats.botId = bot.id LEFT JOIN user ON user.id=bot.userId WHERE user.userid=?";
     PreparedStatement stmt = conn.prepareStatement(statement);
     stmt.setString(1, userid);
     
