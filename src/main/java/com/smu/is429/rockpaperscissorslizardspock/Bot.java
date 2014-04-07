@@ -18,11 +18,10 @@ public class Bot {
 
   };
 
-  public Bot(int id, String name, String code, Language language, int level, int winCount, int lossCount, int drawCount) {
+  public Bot(int id, String name, Language language, int level, int winCount, int lossCount, int drawCount) {
 
     this.id = id;
     this.name = name;
-    this.code = code;
     this.language = language;
     this.level = level;
     this.winCount = winCount;
