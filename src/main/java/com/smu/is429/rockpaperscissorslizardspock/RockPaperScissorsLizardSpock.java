@@ -46,9 +46,14 @@ public class RockPaperScissorsLizardSpock {
       gameDAO = new RockPaperScissorsLizardSpockDAO();
       Bot aiBot = gameDAO.getBot(aiBotId);
       
+      // Get AI move history from database
+      ArrayList<Move> aiMoveHistory = gameDAO.getBotMoveHistory(aiBot.getId());
+
       // Run code through verifier service to get move
-      Move playerMove = runCode(playerBot, language);
-      Move aiMove = runCode(aiBot.getCode(), aiBot.getLanguage());
+      // Player is trying to create a new bot to play the game so there is not history
+      // for ai bot to reference
+      Move playerMove = runCode(playerBot, language, aiMoveHistory);
+      Move aiMove = runCode(aiBot.getCode(), aiBot.getLanguage(), null);
 
       // At this stage, player's bot has been thoroughly validated.
       // Now we can insert player's bot code into database
@@ -134,9 +139,14 @@ public class RockPaperScissorsLizardSpock {
       Bot aiBot = gameDAO.getBot(aiBotId);
       Bot playerBot = gameDAO.getBot(playerBotId);
 
+      // Since both bots already exists in the database, there must be move history on both
+      // so we get both of them
+      ArrayList<Move> playerMoveHistory = gameDAO.getBotMoveHistory(playerBot.getId());
+      ArrayList<Move> aiMoveHistory = gameDAO.getBotMoveHistory(aiBot.getId());
+
       // Run code through verifier service to get move
-      Move playerMove = runCode(playerBot.getCode(), playerBot.getLanguage());
-      Move aiMove = runCode(aiBot.getCode(), aiBot.getLanguage());
+      Move playerMove = runCode(playerBot.getCode(), playerBot.getLanguage(), aiMoveHistory);
+      Move aiMove = runCode(aiBot.getCode(), aiBot.getLanguage(), playerMoveHistory);
 
       // Finally we can move on to find out who wins!
       int score = judge.hasWon(playerMove, aiMove);
@@ -242,9 +252,14 @@ public class RockPaperScissorsLizardSpock {
       Bot playerBot = gameDAO.getBot(previousRound.getPlayerBotId());
       Bot aiBot = gameDAO.getBot(previousRound.getAiBotId());
 
+      // Since both bots already exists in the database, there must be move history on both
+      // so we get both of them
+      ArrayList<Move> playerMoveHistory = gameDAO.getBotMoveHistory(playerBot.getId());
+      ArrayList<Move> aiMoveHistory = gameDAO.getBotMoveHistory(aiBot.getId());
+
       // Run code to get move
-      Move playerMove = runCode(playerBot.getCode(), playerBot.getLanguage());
-      Move aiMove = runCode(aiBot.getCode(), aiBot.getLanguage());
+      Move playerMove = runCode(playerBot.getCode(), playerBot.getLanguage(), aiMoveHistory);
+      Move aiMove = runCode(aiBot.getCode(), aiBot.getLanguage(), playerMoveHistory);
 
       int score = judge.hasWon(playerMove, aiMove);
       gameDAO.insertRound(id, playerBot.getId(), aiBot.getId(), previousRound.getRoundNo() + 1, playerMove, aiMove, score);
@@ -570,28 +585,36 @@ public class RockPaperScissorsLizardSpock {
     
   }
   
-  private Move runCode(String code, Language language) throws SQLException, Exception {
+  private Move runCode(String code, Language language, ArrayList<Move>opponentMoveHistory) throws SQLException, Exception {
 
     String urlString = "http://162.222.183.53/";
     String parameters = "jsonrequest=";
     String tests = "";
 
+    String opponentMoveHistoryString = "[]";
+
+    if(opponentMoveHistory != null) {
+
+      opponentMoveHistoryString = convertMoveList(opponentMoveHistory);
+
+    }
+
     if(language == Language.PYTHON) {
 
       urlString += "python";
-      tests = ">>> play_game()\\n'ANYTHING'";
+      tests = ">>> play_game(" + opponentMoveHistoryString + ")\\n'ANYTHING'";
       parameters += "{\"tests\":\""+ tests +"\",\"solution\":\"" + code + "\"}";
 
     } else if(language == Language.RUBY) {
 
       urlString += "ruby";
-      tests = "assert_equal('ANYTHING',play_game())";
+      tests = "assert_equal('ANYTHING',play_game(" + opponentMoveHistoryString + "))";
       parameters += "{\"tests\":\""+ tests +"\",\"solution\":\"" + code + "\"}";
 
     } else {   // Any other language values we default to javascript
 
       urlString += "js";
-      tests = "assert_equal('ANYTHING',playGame())";
+      tests = "assert_equal('ANYTHING',playGame(" + opponentMoveHistoryString + "))";
       parameters += "{\"tests\":\""+ tests +"\",\"solution\":\"" + URLEncoder.encode(code) + "\"}";
 
     }
@@ -668,7 +691,10 @@ public class RockPaperScissorsLizardSpock {
     }
     
     // Remove the last comma
-    moves = moves.substring(0, moves.length() - 1);
+    if(moves.length() > 1) {
+      moves = moves.substring(0, moves.length() - 1);
+    }
+    
     moves += "]";
     
     return moves;

@@ -43,5 +43,5 @@ CREATE TABLE IF NOT EXISTS user (
   PRIMARY KEY(id)
 );
 
-INSERT INTO bot(id, name, code, language, isVisible, level) VALUES(1, 'Stupid Bot 1', 'def play_game():\\n return \'ROCK\'', 'PYTHON', 1, 0);
+INSERT INTO bot(id, name, code, language, isVisible, level) VALUES(1, 'Stupid Bot 1', 'def play_game(opponent_history):\\n return \'ROCK\'', 'PYTHON', 1, 0);
 INSERT INTO bot_stats(botId) VALUES(1);

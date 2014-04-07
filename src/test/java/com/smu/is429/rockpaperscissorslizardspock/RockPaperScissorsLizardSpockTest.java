@@ -23,7 +23,7 @@ public class RockPaperScissorsLizardSpockTest {
 
     RockPaperScissorsLizardSpock app = new RockPaperScissorsLizardSpock();
 
-    String code = "def play_game():\\n  return 'PAPER'";
+    String code = "def play_game(opponent_history):\\n  return 'PAPER'";
 
     Response response = app.newGame("JUnit Test", code, 1, Language.PYTHON, "null");
     GameSession session = response.getGameSession();
@@ -46,7 +46,7 @@ public class RockPaperScissorsLizardSpockTest {
 
     RockPaperScissorsLizardSpock app = new RockPaperScissorsLizardSpock();
 
-    String code = "def play_game()\\n  return 'PAPER'\\nend";
+    String code = "def play_game(opponent_history)\\n  return 'PAPER'\\nend";
 
     Response response = app.newGame("JUnit Test", code, 1, Language.RUBY, "null");
     GameSession session = response.getGameSession();
@@ -68,7 +68,7 @@ public class RockPaperScissorsLizardSpockTest {
 
     RockPaperScissorsLizardSpock app = new RockPaperScissorsLizardSpock();
 
-    String code = "function playGame() {\\n  return \\\"PAPER\\\";\\n}";
+    String code = "function playGame(opponent_history) {\\n  return \\\"PAPER\\\";\\n}";
 
     Response response = app.newGame("JUnit Test", code, 1, Language.JAVASCRIPT, "null");
     GameSession session = response.getGameSession();

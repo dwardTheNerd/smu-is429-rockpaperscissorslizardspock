@@ -385,7 +385,7 @@ public class RockPaperScissorsLizardSpockDAO {
     
   }
   
-  public ArrayList<Move> getAiMoveHistory(int botId) throws SQLException {
+  public ArrayList<Move> getBotMoveHistory(int botId) throws SQLException {
 
     String statement = "SELECT aiMove from game_session WHERE aiBotId=? ORDER BY id LIMIT 10";
     PreparedStatement stmt = conn.prepareStatement(statement);
@@ -404,7 +404,7 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
 
-  public ArrayList<Move> getAiMoveHistory(int botId, String gameId) throws SQLException {
+  public ArrayList<Move> getBotMoveHistory(int botId, String gameId) throws SQLException {
 
     String statement = "SELECT aiMove from game_session WHERE aiBotId=? AND id=? ORDER BY roundNo DESC LIMIT 10";
     PreparedStatement stmt = conn.prepareStatement(statement);
