@@ -42,12 +42,10 @@ public class RockPaperScissorsLizardSpock {
     
     // Retrieve ai bot code from the database
     try {
-      System.out.println("START");
+      
       gameDAO = new RockPaperScissorsLizardSpockDAO();
       Bot aiBot = gameDAO.getBot(aiBotId);
-
-      System.out.println("RETRIEVED");
-                         
+      
       // Invoking provided verify service
       Gson gson = new Gson();
       VerifyServiceResponse playerResponse = gson.fromJson(testCode(playerBot, language), VerifyServiceResponse.class);
@@ -231,25 +229,37 @@ public class RockPaperScissorsLizardSpock {
           // Update player's bot status
           gameDAO.updateBotStatus(previousRound.getPlayerBotId(), 1, previousRound.getAiBotId());
 
+          // Calculate ELO ratings for both player and opponent bot
+          int elo_player = calculateRating(1, playerBot.getElo(), aiBot.getElo());
+          int elo_ai = calculateRating(0, aiBot.getElo(), playerBot.getElo());
+          
           // Update statistics for both bots
-          gameDAO.updateBotStatistics(previousRound.getPlayerBotId(), playerBot.getWinCount() + 1, playerBot.getDrawCount(), playerBot.getLossCount());
-          gameDAO.updateBotStatistics(previousRound.getAiBotId(), aiBot.getWinCount(), aiBot.getDrawCount(), aiBot.getLossCount() + 1);
+          gameDAO.updateBotStatistics(previousRound.getPlayerBotId(), playerBot.getWinCount() + 1, playerBot.getDrawCount(), playerBot.getLossCount(), elo_player);
+          gameDAO.updateBotStatistics(previousRound.getAiBotId(), aiBot.getWinCount(), aiBot.getDrawCount(), aiBot.getLossCount() + 1, elo_ai);
 
           response.setMessage("Congratulations! Your bot has won the game!");
 
         } else if(totalScore == 0) {
 
+          // Calculate ELO ratings for both player and opponent bot
+          int elo_player = calculateRating(0.5, playerBot.getElo(), aiBot.getElo());
+          int elo_ai = calculateRating(0.5, aiBot.getElo(), playerBot.getElo());
+          
           // Update statistics for both bots
-          gameDAO.updateBotStatistics(previousRound.getPlayerBotId(), playerBot.getWinCount(), aiBot.getDrawCount() + 1, aiBot.getLossCount());
-          gameDAO.updateBotStatistics(previousRound.getAiBotId(), aiBot.getWinCount(), aiBot.getDrawCount() + 1, aiBot.getLossCount());
+          gameDAO.updateBotStatistics(previousRound.getPlayerBotId(), playerBot.getWinCount(), aiBot.getDrawCount() + 1, aiBot.getLossCount(), elo_player);
+          gameDAO.updateBotStatistics(previousRound.getAiBotId(), aiBot.getWinCount(), aiBot.getDrawCount() + 1, aiBot.getLossCount(), elo_ai);
 
           response.setMessage("Your bot draw the game! Don't be sad, try again!");
 
         } else {
 
+          // Calculate ELO ratings for both player and opponent bot
+          int elo_player = calculateRating(0, playerBot.getElo(), aiBot.getElo());
+          int elo_ai = calculateRating(1, aiBot.getElo(), playerBot.getElo());
+          
           // Update statistics for both bots
-          gameDAO.updateBotStatistics(previousRound.getPlayerBotId(), playerBot.getWinCount(), playerBot.getDrawCount(), playerBot.getLossCount() + 1);
-          gameDAO.updateBotStatistics(previousRound.getAiBotId(), aiBot.getWinCount() + 1, aiBot.getDrawCount(), aiBot.getLossCount());
+          gameDAO.updateBotStatistics(previousRound.getPlayerBotId(), playerBot.getWinCount(), playerBot.getDrawCount(), playerBot.getLossCount() + 1, elo_player);
+          gameDAO.updateBotStatistics(previousRound.getAiBotId(), aiBot.getWinCount() + 1, aiBot.getDrawCount(), aiBot.getLossCount(), elo_ai);
 
           response.setMessage("Your bot lost the game. Try modifying your codes and try again!");
 
@@ -538,6 +548,24 @@ public class RockPaperScissorsLizardSpock {
     
     return moves;
     
+  }
+  
+  private int calculateRating(double score, int playerBotRating, int aiBotRating) {
+    if(playerBotRating > 2400 && aiBotRating > 2400) {
+      return playerBotRating + eloFormula(32, score, playerBotRating, aiBotRating);
+    } else if(playerBotRating < 2401 || aiBotRating < 2401) {
+      return playerBotRating + eloFormula(24, score, playerBotRating, aiBotRating);
+    } else {
+      return playerBotRating + eloFormula(16, score, playerBotRating, aiBotRating);
+    }
+  }
+	
+  private int eloFormula(int kFactor, double score, int playerBotRating, int aiBotRating) {
+    double difference = (aiBotRating - playerBotRating)/400.0;
+    double power10 = Math.pow(10.0, difference);
+    double rawResult = kFactor * (score - (1/(power10+1)));
+    int result = (int) Math.ceil(rawResult);
+    return result;
   }
   
 }

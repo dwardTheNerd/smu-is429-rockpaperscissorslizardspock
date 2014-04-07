@@ -87,14 +87,14 @@ public class RockPaperScissorsLizardSpockDAO {
 
   public Bot getBot(int id) throws SQLException {
 
-    String statement  = "SELECT bot.id AS 'id', bot.name AS 'name', bot.code AS 'code', bot.language AS 'language', bot.level AS 'level', bot_stats.win AS 'win', bot_stats.loss AS 'loss', bot_stats.draw AS 'draw' FROM bot LEFT JOIN bot_stats ON bot_stats.botId = bot.id WHERE bot.id=?";
+    String statement  = "SELECT bot.id AS 'id', bot.name AS 'name', bot.code AS 'code', bot.language AS 'language', bot.level AS 'level', bot_stats.win AS 'win', bot_stats.loss AS 'loss', bot_stats.draw AS 'draw', bot_stats.elo_rating AS 'elo_rating' FROM bot LEFT JOIN bot_stats ON bot_stats.botId = bot.id WHERE bot.id=?";
     PreparedStatement stmt = conn.prepareStatement(statement);
     stmt.setInt(1, id);
 
     ResultSet rs = stmt.executeQuery();
     Bot bot = null;
     while(rs.next()) {
-      bot = new Bot(rs.getInt("id"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("level"), rs.getInt("win"), rs.getInt("loss"), rs.getInt("draw"));
+      bot = new Bot(rs.getInt("id"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("level"), rs.getInt("win"), rs.getInt("loss"), rs.getInt("draw"), rs.getInt("elo_rating"));
     }
 
     rs.close();
@@ -110,12 +110,12 @@ public class RockPaperScissorsLizardSpockDAO {
 
     ArrayList<Bot> bots = new ArrayList<Bot>();
 
-    String statement = "SELECT bot.id, bot.name, bot.language, bot.code, bot.language, bot.level, bot_stats.win, bot_stats.loss, bot_stats.draw FROM bot LEFT JOIN bot_stats ON bot_stats.botId = bot.id WHERE isVisible=1";
+    String statement = "SELECT bot.id, bot.name, bot.language, bot.code, bot.language, bot.level, bot_stats.win, bot_stats.loss, bot_stats.draw, bot_stats.elo_rating FROM bot LEFT JOIN bot_stats ON bot_stats.botId = bot.id WHERE isVisible=1";
     PreparedStatement stmt = conn.prepareStatement(statement);
 
     ResultSet rs = stmt.executeQuery();
     while(rs.next()) {
-      bots.add(new Bot(rs.getInt("id"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("level")));
+      bots.add(new Bot(rs.getInt("id"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("level"), rs.getInt("win"), rs.getInt("loss"), rs.getInt("draw"), rs.getInt("elo_rating")));
     }
     
     rs.close();
@@ -232,15 +232,15 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
   
-  public void updateBotStatistics(int botId, int win, int draw, int loss) throws SQLException {
+  public void updateBotStatistics(int botId, int win, int draw, int loss, int elo) throws SQLException {
      
-    String statement = "INSERT INTO bot_stats (botId, win, draw, loss) VALUES (?, ?, ?, ?)";
+    String statement = "INSERT INTO bot_stats (botId, win, draw, loss, elo_rating) VALUES (?, ?, ?, ?, ?)";
     PreparedStatement stmt = conn.prepareStatement(statement);
     stmt.setInt(1, botId);
     stmt.setInt(2, win);
     stmt.setInt(3, draw);
     stmt.setInt(4, loss);
-    //stmt.setInt(5, elo);
+    stmt.setInt(5, elo);
 
     int success = stmt.executeUpdate();
 
