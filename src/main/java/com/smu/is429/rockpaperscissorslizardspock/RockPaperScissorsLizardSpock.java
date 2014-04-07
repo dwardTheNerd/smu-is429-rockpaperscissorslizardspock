@@ -455,43 +455,6 @@ public class RockPaperScissorsLizardSpock {
     }
     
   }
-
-  @ApiMethod(name="insertUser", path="insertUser")
-  public void insertUser(@Named("userId") String userid) {
-    
-    RockPaperScissorsLizardSpockDAO gameDAO = null;
-    
-    try {
-      
-      gameDAO = new RockPaperScissorsLizardSpockDAO();
-      gameDAO.insertUser(userid);
-      
-    } catch(SQLException ex) {
-     
-      // TODO: Error handling
-      
-    } catch(Exception ex) {
-        
-      // TODO: Error handling
-      
-    } finally {
-      
-      if(gameDAO != null) {
-
-        try {
-          gameDAO.close();
-          gameDAO = null;
-        } catch(SQLException ex) {
-          
-          // TODO: Error handling
-
-        }
-
-      }
-      
-    }
-    
-  }
   
   @ApiMethod(name="getBotsByUser", path="getBotsByUser")
   public ArrayList<Bot> getBotsByUser(@Named("userId") String userid) {
