@@ -36,9 +36,11 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
 
-  public int insertUser(String userid) throws SQLException {
+  /*public int insertUser(String userid) throws SQLException {
     
-  }
+    
+    
+  }*/
   
   public int insertBot(String name, String bot, Language language) throws SQLException {
 
