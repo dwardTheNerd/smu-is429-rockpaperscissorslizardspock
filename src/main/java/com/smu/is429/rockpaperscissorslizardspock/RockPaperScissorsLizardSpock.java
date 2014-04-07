@@ -42,10 +42,12 @@ public class RockPaperScissorsLizardSpock {
     
     // Retrieve ai bot code from the database
     try {
-
+      System.out.println("START");
       gameDAO = new RockPaperScissorsLizardSpockDAO();
       Bot aiBot = gameDAO.getBot(aiBotId);
 
+      System.out.println("RETRIEVED");
+                         
       // Invoking provided verify service
       Gson gson = new Gson();
       VerifyServiceResponse playerResponse = gson.fromJson(testCode(playerBot, language), VerifyServiceResponse.class);
@@ -230,24 +232,24 @@ public class RockPaperScissorsLizardSpock {
           gameDAO.updateBotStatus(previousRound.getPlayerBotId(), 1, previousRound.getAiBotId());
 
           // Update statistics for both bots
-          gameDAO.updateBotStatistics(previousRound.getPlayerBotId(), id, 1, 0, 0);
-          gameDAO.updateBotStatistics(previousRound.getAiBotId(), id, 0, 0, 1);
+          gameDAO.updateBotStatistics(previousRound.getPlayerBotId(), playerBot.getWinCount() + 1, playerBot.getDrawCount(), playerBot.getLossCount());
+          gameDAO.updateBotStatistics(previousRound.getAiBotId(), aiBot.getWinCount(), aiBot.getDrawCount(), aiBot.getLossCount() + 1);
 
           response.setMessage("Congratulations! Your bot has won the game!");
 
         } else if(totalScore == 0) {
 
           // Update statistics for both bots
-          gameDAO.updateBotStatistics(previousRound.getPlayerBotId(), id, 0, 1, 0);
-          gameDAO.updateBotStatistics(previousRound.getAiBotId(), id, 0, 1, 0);
+          gameDAO.updateBotStatistics(previousRound.getPlayerBotId(), playerBot.getWinCount(), aiBot.getDrawCount() + 1, aiBot.getLossCount());
+          gameDAO.updateBotStatistics(previousRound.getAiBotId(), aiBot.getWinCount(), aiBot.getDrawCount() + 1, aiBot.getLossCount());
 
           response.setMessage("Your bot draw the game! Don't be sad, try again!");
 
         } else {
 
           // Update statistics for both bots
-          gameDAO.updateBotStatistics(previousRound.getPlayerBotId(), id, 0, 0, 1);
-          gameDAO.updateBotStatistics(previousRound.getAiBotId(), id, 1, 0, 0);
+          gameDAO.updateBotStatistics(previousRound.getPlayerBotId(), playerBot.getWinCount(), playerBot.getDrawCount(), playerBot.getLossCount() + 1);
+          gameDAO.updateBotStatistics(previousRound.getAiBotId(), aiBot.getWinCount() + 1, aiBot.getDrawCount(), aiBot.getLossCount());
 
           response.setMessage("Your bot lost the game. Try modifying your codes and try again!");
 
@@ -442,58 +444,6 @@ public class RockPaperScissorsLizardSpock {
 
     }
     
-  }
-
-  @ApiMethod(name="getBotStatistics", path="getBotStatistics")
-  public Response getBotStatistics(@Named("botId") int id) {
-
-    RockPaperScissorsLizardSpockDAO gameDAO = null;
-    Response response = null;
-
-    try {
-
-      gameDAO = new RockPaperScissorsLizardSpockDAO();
-      Bot bot = gameDAO.getBotStatistics(id);
-
-      response = new Response();
-      response.setSuccess(true);
-      response.setBot(bot);
-      return response;
-
-    } catch(SQLException ex) {
-
-      response = new Response();
-      response.setSuccess(false);
-      response.setMessage(ex.getMessage());
-      return response;
-
-    } catch(Exception ex) {
-
-      response = new Response();
-      response.setSuccess(false);
-      response.setMessage(ex.getMessage());
-      return response;
-
-    } finally {
-
-      if(gameDAO != null) {
-
-        try {
-          gameDAO.close();
-          gameDAO = null;
-        } catch(SQLException ex) {
-          
-          response = new Response();
-          response.setSuccess(false);
-          response.setMessage(ex.getMessage());
-          return response;
-
-        }
-
-      }
-
-    }
-
   }
 
   private String testCode(String code, Language language) {

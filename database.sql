@@ -36,4 +36,5 @@ CREATE TABLE IF NOT EXISTS bot_stats (
   FOREIGN KEY(botId) REFERENCES bot(id)
 );
 
-INSERT INTO bot(name, code, language, isVisible, level) VALUES('Stupid Bot 1', 'def play_game():\\n return \'ROCK\'', 'PYTHON', 1, 0);
+INSERT INTO bot(id, name, code, language, isVisible, level) VALUES(1, 'Stupid Bot 1', 'def play_game():\\n return \'ROCK\'', 'PYTHON', 1, 0);
+INSERT INTO bot_stats(botId) VALUES(1);

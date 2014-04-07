@@ -59,20 +59,42 @@ public class RockPaperScissorsLizardSpockDAO {
     rs.close();
     stmt.close();
 
+    statement = "INSERT INTO bot_stats(botId) VALUES(?)";
+    stmt = conn.prepareStatement(statement);
+    stmt.setInt(1, id);
+    
+    success = stmt.executeUpdate();
+    
+    stmt.close();
+    
+    if(success == 0) {
+      
+      // Need to delete record if not properly inserted
+      statement = "DELETE FROM bot WHERE id=?";
+      stmt = conn.prepareStatement(statement);
+      stmt.setInt(1, id);
+      
+      stmt.executeUpdate();
+      
+      stmt.close();
+      
+      throw new SQLException("Failure inserting bot to database"); 
+    }
+    
     return id;
 
   }
 
   public Bot getBot(int id) throws SQLException {
 
-    String statement  = "SELECT * FROM bot LEFT JOIN bot_stats ON bot_stats.botId = bot.id WHERE id=?";
+    String statement  = "SELECT bot.id AS 'id', bot.name AS 'name', bot.code AS 'code', bot.language AS 'language', bot.level AS 'level', bot_stats.win AS 'win', bot_stats.loss AS 'loss', bot_stats.draw AS 'draw' FROM bot LEFT JOIN bot_stats ON bot_stats.botId = bot.id WHERE bot.id=?";
     PreparedStatement stmt = conn.prepareStatement(statement);
     stmt.setInt(1, id);
 
     ResultSet rs = stmt.executeQuery();
     Bot bot = null;
     while(rs.next()) {
-      bot = new Bot(rs.getInt("id"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("level"));
+      bot = new Bot(rs.getInt("id"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("level"), rs.getInt("win"), rs.getInt("loss"), rs.getInt("draw"));
     }
 
     rs.close();
@@ -88,7 +110,7 @@ public class RockPaperScissorsLizardSpockDAO {
 
     ArrayList<Bot> bots = new ArrayList<Bot>();
 
-    String statement = "SELECT * FROM bot WHERE isVisible=1";
+    String statement = "SELECT bot.id, bot.name, bot.language, bot.code, bot.language, bot.level, bot_stats.win, bot_stats.loss, bot_stats.draw FROM bot LEFT JOIN bot_stats ON bot_stats.botId = bot.id WHERE isVisible=1";
     PreparedStatement stmt = conn.prepareStatement(statement);
 
     ResultSet rs = stmt.executeQuery();
@@ -210,42 +232,15 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
   
-  public void updateBotStatistics(int botId, int win, int draw, int loss, int elo) throws SQLException {
-
-    String statement = "SELECT COUNT(*) AS 'count' FROM bot_stats WHERE botId=?";
-    PreparedStatement stmt = conn.prepareStatement(statement);
-    stmt.setInt(botId);
-    
-    ResultSet rs = stmt.executeQuery();
-    int count = 0;
-    while(rs.next()) {
-      count = rs.getInt("count");
-    }
-    
-    rs.close();
-    stmt.close();
-    
-    if(count == 1) {
-      
-      statement = "UPDATE bot_stats SET win=?, draw=?, loss=?, elo_rating=? WHERE botId=?";      
-      stmt = conn.prepareStatement(statement);
-      stmt.setInt(1, win);
-      stmt.setInt(2, draw);
-      stmt.setInt(3, loss);
-      stmt.setInt(4, elo);
-      stmt.setInt(5, botId);
-      
-    } else {
+  public void updateBotStatistics(int botId, int win, int draw, int loss) throws SQLException {
      
-      statement = "INSERT INTO bot_stats (botId, win, draw, loss, elo_rating) VALUES (?, ?, ?, ?, ?, ?)";
-      stmt = conn.prepareStatement(statement);
-      stmt.setInt(1, botId);
-      stmt.setInt(2, win);
-      stmt.setInt(3, draw);
-      stmt.setInt(4, loss);
-      stmt.setInt(5, elo);
-      
-    }
+    String statement = "INSERT INTO bot_stats (botId, win, draw, loss) VALUES (?, ?, ?, ?)";
+    PreparedStatement stmt = conn.prepareStatement(statement);
+    stmt.setInt(1, botId);
+    stmt.setInt(2, win);
+    stmt.setInt(3, draw);
+    stmt.setInt(4, loss);
+    //stmt.setInt(5, elo);
 
     int success = stmt.executeUpdate();
 
@@ -254,27 +249,6 @@ public class RockPaperScissorsLizardSpockDAO {
     }
     
     stmt.close();
-
-  }
-
-  public Bot getBotStatistics(int botId) throws SQLException {
-
-    String statement = "SELECT botId, name, language, level, win, draw, loss, elo_rating FROM bot_stats RIGHT JOIN bot on bot.id=bot_stats.botId WHERE botId=?";
-    PreparedStatement stmt = conn.prepareStatement(statement);
-    stmt.setInt(1, botId);
-
-    ResultSet rs = stmt.executeQuery();
-    Bot bot = null;
-    while(rs.next()) {
-
-      bot = new Bot(rs.getInt("botId"), rs.getString("name"), Language.valueOf(rs.getString("language")), rs.getInt("level"), rs.getInt("win"), rs.getInt("loss"), rs.getInt("draw"));
-
-    }
-
-    rs.close();
-    stmt.close();
-
-    return bot;
 
   }
 
@@ -354,7 +328,7 @@ public class RockPaperScissorsLizardSpockDAO {
 
   public void deleteBot(int botID) throws SQLException {
 
-    String statement = "DELETE FROM bot WHERE id=?";
+    String statement = "DELETE FROM bot_stats WHERE botId=?";
     PreparedStatement stmt = conn.prepareStatement(statement);
     stmt.setInt(1, botID);
 
@@ -365,7 +339,19 @@ public class RockPaperScissorsLizardSpockDAO {
     }
 
     stmt.close();
+    
+    statement = "DELETE FROM bot WHERE id=?";
+    stmt = conn.prepareStatement(statement);
+    stmt.setInt(1, botID);
 
+    success = stmt.executeUpdate();
+
+    if(success == 0) {
+      throw new SQLException("Failure deleting bot from database.");
+    }
+
+    stmt.close();
+    
   }
   
   public void close() throws SQLException {
