@@ -36,6 +36,10 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
 
+  public int insertUser(String userid) throws SQLException {
+    
+  }
+  
   public int insertBot(String name, String bot, Language language) throws SQLException {
 
     String statement = "INSERT INTO bot (name, code, language, isVisible) VALUES(?, ?, ?, 0)";
@@ -444,7 +448,6 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
   
-  // Get list of user bots
   public void close() throws SQLException {
     conn.close();
   }

@@ -457,7 +457,7 @@ public class RockPaperScissorsLizardSpock {
   }
 
   @ApiMethod(name="getBotsByUser", path="getBotsByUser")
-  public ArrayList<Bot> getBotsByUser(String userid) {
+  public ArrayList<Bot> getBotsByUser(@Named("userId") String userid) {
     
     RockPaperScissorsLizardSpockDAO gameDAO = null;
     ArrayList<Bot> bots = new ArrayList<Bot>();
