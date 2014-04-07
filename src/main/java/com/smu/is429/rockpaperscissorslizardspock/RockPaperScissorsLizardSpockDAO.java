@@ -232,7 +232,7 @@ public class RockPaperScissorsLizardSpockDAO {
 
   public Bot getBotStatistics(int botId) throws SQLException {
 
-    String statement = "SELECT botId, name, language, level, SUM(win) AS 'win', SUM(draw) AS 'draw', SUM(loss) AS 'loss' FROM bot_stats WHERE botId=? RIGHT JOIN bot ON bot.id=bot_stats.botId GROUP BY botId, name, language, level";
+    String statement = "SELECT botId, name, language, level, SUM(win) AS 'win', SUM(draw) AS 'draw', SUM(loss) AS 'loss' FROM bot_stats RIGHT JOIN bot on bot.id=bot_stats.botId WHERE botId=? GROUP BY botId, name, language, level";
     PreparedStatement stmt = conn.prepareStatement(statement);
     stmt.setInt(1, botId);
 
