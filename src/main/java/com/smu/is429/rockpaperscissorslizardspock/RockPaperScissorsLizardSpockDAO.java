@@ -348,13 +348,13 @@ public class RockPaperScissorsLizardSpockDAO {
   
   public void updateBotStatistics(int botId, int win, int draw, int loss, int elo) throws SQLException {
      
-    String statement = "INSERT INTO bot_stats (botId, win, draw, loss, elo_rating) VALUES (?, ?, ?, ?, ?)";
+    String statement = "UPDATE bot_stats SET win=?, draw=?, loss=?, elo_rating=? WHERE botId=?";
     PreparedStatement stmt = conn.prepareStatement(statement);
-    stmt.setInt(1, botId);
-    stmt.setInt(2, win);
-    stmt.setInt(3, draw);
-    stmt.setInt(4, loss);
-    stmt.setInt(5, elo);
+    stmt.setInt(1, win);
+    stmt.setInt(2, draw);
+    stmt.setInt(3, loss);
+    stmt.setInt(4, elo);
+    stmt.setInt(5, botId);
 
     int success = stmt.executeUpdate();
 
