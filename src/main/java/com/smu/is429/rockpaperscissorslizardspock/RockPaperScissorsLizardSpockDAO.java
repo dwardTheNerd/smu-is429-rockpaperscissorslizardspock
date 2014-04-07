@@ -85,6 +85,56 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
 
+  public int insertBot(String name, String bot, Language language, String userid) throws SQLException {
+
+    String statement = "INSERT INTO bot (name, code, language, isVisible, userid) VALUES(?, ?, ?, 0, ?)";
+    PreparedStatement stmt = conn.prepareStatement(statement, Statement.RETURN_GENERATED_KEYS);
+    stmt.setString(1, name);
+    stmt.setString(2, bot);
+    stmt.setString(3, language.name());
+    stmt.setString(4, userid);
+    
+    int success = stmt.executeUpdate();
+
+    if(success == 0) {
+      throw new SQLException("Failure inserting bot to database.");
+    }
+
+    int id = 0;
+    ResultSet rs = stmt.getGeneratedKeys();
+    if(rs.next()) {
+      id = rs.getInt(1);
+    }
+
+    rs.close();
+    stmt.close();
+
+    statement = "INSERT INTO bot_stats(botId) VALUES(?)";
+    stmt = conn.prepareStatement(statement);
+    stmt.setInt(1, id);
+    
+    success = stmt.executeUpdate();
+    
+    stmt.close();
+    
+    if(success == 0) {
+      
+      // Need to delete record if not properly inserted
+      statement = "DELETE FROM bot WHERE id=?";
+      stmt = conn.prepareStatement(statement);
+      stmt.setInt(1, id);
+      
+      stmt.executeUpdate();
+      
+      stmt.close();
+      
+      throw new SQLException("Failure inserting bot to database"); 
+    }
+    
+    return id;
+
+  }
+  
   public Bot getBot(int id) throws SQLException {
 
     String statement  = "SELECT bot.id AS 'id', bot.name AS 'name', bot.code AS 'code', bot.language AS 'language', bot.level AS 'level', bot_stats.win AS 'win', bot_stats.loss AS 'loss', bot_stats.draw AS 'draw', bot_stats.elo_rating AS 'elo_rating' FROM bot LEFT JOIN bot_stats ON bot_stats.botId = bot.id WHERE bot.id=?";
@@ -125,6 +175,26 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
 
+  public ArrayList<Bot> getBotListByUser(String userid) throws SQLException {
+
+    ArrayList<Bot> bots = new ArrayList<Bot>();
+
+    String statement = "SELECT bot.id, bot.name, bot.language, bot.code, bot.language, bot.level, bot_stats.win, bot_stats.loss, bot_stats.draw, bot_stats.elo_rating FROM bot LEFT JOIN bot_stats ON bot_stats.botId = bot.id WHERE isVisible=1 AND userid=?";
+    PreparedStatement stmt = conn.prepareStatement(statement);
+    stmt.setString(1, userid);
+    
+    ResultSet rs = stmt.executeQuery();
+    while(rs.next()) {
+      bots.add(new Bot(rs.getInt("id"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("level"), rs.getInt("win"), rs.getInt("loss"), rs.getInt("draw"), rs.getInt("elo_rating")));
+    }
+    
+    rs.close();
+    stmt.close();
+
+    return bots;
+
+  }
+  
   public void insertRound(String id, int playerBotId, int aiBotId, int roundNo, Move playerMove, Move aiMove, int score) throws SQLException {
 
     // Creating a new game is basically just inserting the very first round of
