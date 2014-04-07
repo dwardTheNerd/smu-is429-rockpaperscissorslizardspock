@@ -22,6 +22,11 @@ is429App.config(['$routeProvider', function($routeProvider) {
 						templateUrl: 'partials/leaderboard.html',
 						activetab: 'leaderboard'
 					})
+				.when('/yourbots',
+					{
+						templateUrl: 'partials/yourbots.html',
+						activetab: 'yourbots'
+					})
 				.otherwise({redirectTo: '/'});
 		}]);
 		
