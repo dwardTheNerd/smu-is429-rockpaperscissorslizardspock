@@ -355,6 +355,24 @@ public class RockPaperScissorsLizardSpockDAO {
   }
   
   // Get top 10 base on ELO rating
+  public ArrayList<Bot> getTopTenBots() throws SQLException {
+
+    ArrayList<Bot> bots = new ArrayList<Bot>();
+
+    String statement = "SELECT bot.id, bot.name, bot.language, bot.code, bot.language, bot.level, bot_stats.win, bot_stats.loss, bot_stats.draw, bot_stats.elo_rating FROM bot LEFT JOIN bot_stats ON bot_stats.botId = bot.id WHERE isVisible=1 ORDER BY elo_rating DESC LIMIT 10";
+    PreparedStatement stmt = conn.prepareStatement(statement);
+
+    ResultSet rs = stmt.executeQuery();
+    while(rs.next()) {
+      bots.add(new Bot(rs.getInt("id"), rs.getString("name"), rs.getString("code"), Language.valueOf(rs.getString("language")), rs.getInt("level"), rs.getInt("win"), rs.getInt("loss"), rs.getInt("draw"), rs.getInt("elo_rating")));
+    }
+    
+    rs.close();
+    stmt.close();
+
+    return bots;
+
+  }
   
   // Get list of user bots
   public void close() throws SQLException {

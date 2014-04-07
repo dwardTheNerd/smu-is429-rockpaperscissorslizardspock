@@ -456,6 +456,46 @@ public class RockPaperScissorsLizardSpock {
     
   }
 
+  @ApiMethod(name="getTopTenBots", path="getTopTenBots")
+  public ArrayList<Bot> getTopTenBots() {
+    
+    RockPaperScissorsLizardSpockDAO gameDAO = null;
+    ArrayList<Bot> bots = new ArrayList<Bot>();
+    
+    try {
+      
+      gameDAO = new RockPaperScissorsLizardSpockDAO();
+      bots = gameDAO.getTopTenBots();
+      
+    } catch(SQLException ex) {
+      
+      // TODO: Error handling
+      
+    } catch(Exception ex) {
+      
+      // TODO: Error handling
+      
+    } finally {
+      
+      if(gameDAO != null) {
+
+        try {
+          gameDAO.close();
+          gameDAO = null;
+        } catch(SQLException ex) {
+          
+          // TODO: Error handling
+
+        }
+
+      }
+    
+    }
+    
+    return bots;
+    
+  }
+  
   private String testCode(String code, Language language) {
 
     String urlString = "http://162.222.183.53/";
