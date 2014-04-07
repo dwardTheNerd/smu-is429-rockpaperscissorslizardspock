@@ -36,11 +36,49 @@ public class RockPaperScissorsLizardSpockDAO {
 
   }
 
-  /*public int insertUser(String userid) throws SQLException {
+  public int insertUser(String userid) throws SQLException {
     
+    String statement = "SELECT id FROM user WHERE userid=?";
+    PreparedStatement stmt = conn.prepareStatement(statement);
+    stmt.setString(1, userid);
     
+    ResultSet rs = stmt.executeQuery();
     
-  }*/
+    int id = -1;
+    while(rs.next()) {
+      id = rs.getInt("id");
+    }
+    
+    rs.close();
+    stmt.close();
+    
+    // If user record already existed in database, just return
+    // the id
+    if(id != -1) {
+       return id; 
+    }
+    
+    statement = "INSERT INTO user(userid) VALUES(?)";
+    stmt = conn.prepareStatement(statement, Statement.RETURN_GENERATED_KEYS);
+    stmt.setString(1, userid);
+    
+    int success = stmt.executeUpdate();
+
+    if(success == 0) {
+      throw new SQLException("Failure inserting user to database.");
+    }
+    
+    rs = stmt.getGeneratedKeys();
+    if(rs.next()) {
+      id = rs.getInt(1);
+    }
+    
+    rs.close();
+    stmt.close();
+    
+    return id;
+    
+  }
   
   public int insertBot(String name, String bot, Language language) throws SQLException {
 
