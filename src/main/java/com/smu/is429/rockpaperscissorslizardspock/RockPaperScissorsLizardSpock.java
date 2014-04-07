@@ -29,7 +29,7 @@ public class RockPaperScissorsLizardSpock {
 
   }
 
-  // Start a new game
+  // Start a new game with new bot
   @ApiMethod(name="newGame", path="newGame")
   public Response newGame(@Named("playerBotName") String playerBotName, @Named("playerBotCode") String playerBot, @Named("aiBotId") int aiBotId, @Named("language") Language language, @Named("userId") String userId) {
 
@@ -78,6 +78,73 @@ public class RockPaperScissorsLizardSpock {
       // Generate a unique id to associate with the game session
       String id = generateID();
       gameDAO.insertRound(id, playerBotId, aiBot.getId(), 1, playerMove, aiMove, score);
+
+      response = new Response();
+      response.setSuccess(true);
+      response.setGameSession(new GameSession(id, 1, playerBotId, aiBot.getId(), playerMove, aiMove, score));
+      response.setTotalScore(score);
+      return response;
+      
+    } catch(SQLException ex) {
+
+      response = new Response();
+      response.setSuccess(false);
+      response.setMessage(ex.getMessage());
+      return response;
+
+    } catch(Exception ex) {
+
+      response = new Response();
+      response.setSuccess(false);
+      response.setMessage(ex.getMessage());
+      return response;
+
+    } finally {
+
+      if(gameDAO != null) {
+
+        try {
+          gameDAO.close();
+          gameDAO = null;
+        } catch(SQLException ex) {
+          response = new Response();
+          response.setSuccess(false);
+          response.setMessage(ex.getMessage());
+          return response;          
+        }
+
+      }
+
+    }
+
+  }
+
+  // Start a new game with existing bots
+  @ApiMethod(name="createNewGameWithExistingBots", path="createNewGameWithExistingBots")
+  public Response createNewGameWithExistingBots(@Named("playerBotId") int playerBotId, @Named("aiBotId") int aiBotId) {
+
+    RockPaperScissorsLizardSpockDAO gameDAO = null;
+
+    Response response = null;
+    
+    // Retrieve ai bot code from the database
+    try {
+      
+      gameDAO = new RockPaperScissorsLizardSpockDAO();
+      Bot aiBot = gameDAO.getBot(aiBotId);
+      Bot playerBot = gameDAO.getBot(playerBotId);
+
+      // Run code through verifier service to get move
+      Move playerMove = runCode(playerBot.getCode(), playerBot.getLanguage());
+      Move aiMove = runCode(aiBot.getCode(), aiBot.getLanguage());
+
+      // Finally we can move on to find out who wins!
+      int score = judge.hasWon(playerMove, aiMove);
+
+      // Last step, we need to insert the new game session into the database
+      // Generate a unique id to associate with the game session
+      String id = generateID();
+      gameDAO.insertRound(id, playerBot.getId(), aiBot.getId(), 1, playerMove, aiMove, score);
 
       response = new Response();
       response.setSuccess(true);
@@ -503,7 +570,7 @@ public class RockPaperScissorsLizardSpock {
     
   }
   
-  private Move runCode(String code, Language language) throws Exception {
+  private Move runCode(String code, Language language) throws SQLException, Exception {
 
     String urlString = "http://162.222.183.53/";
     String parameters = "jsonrequest=";
