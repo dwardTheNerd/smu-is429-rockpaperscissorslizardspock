@@ -229,13 +229,25 @@ public class RockPaperScissorsLizardSpock {
           // Update player's bot status
           gameDAO.updateBotStatus(previousRound.getPlayerBotId(), 1, previousRound.getAiBotId());
 
+          // Update statistics for both bots
+          gameDAO.updateBotStatistics(previousRound.getPlayerBotId(), id, 1, 0, 0);
+          gameDAO.updateBotStatistics(previousRound.getAiBotId(), id, 0, 0, 1);
+
           response.setMessage("Congratulations! Your bot has won the game!");
 
         } else if(totalScore == 0) {
 
+          // Update statistics for both bots
+          gameDAO.updateBotStatistics(previousRound.getPlayerBotId(), id, 0, 1, 0);
+          gameDAO.updateBotStatistics(previousRound.getAiBotId(), id, 0, 1, 0);
+
           response.setMessage("Your bot draw the game! Don't be sad, try again!");
 
         } else {
+
+          // Update statistics for both bots
+          gameDAO.updateBotStatistics(previousRound.getPlayerBotId(), id, 0, 0, 1);
+          gameDAO.updateBotStatistics(previousRound.getAiBotId(), id, 1, 0, 0);
 
           response.setMessage("Your bot lost the game. Try modifying your codes and try again!");
 
