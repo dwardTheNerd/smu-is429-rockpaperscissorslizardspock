@@ -7,13 +7,11 @@ public class Bot {
   private Language language;
   private int level = -1;
   private int winCount, lossCount, drawCount, elo;
-  
-  public Bot(int id, String name, String code, Language language, int level) {
+
+  public Bot(int id, String name, int level) {
 
     this.id = id;
     this.name = name;
-    this.code = code;
-    this.language = language;
     this.level = level;
 
   }
@@ -31,7 +29,7 @@ public class Bot {
     this.elo = elo;
     
   }
-  
+
   public int getId() {
     return id;
   }
