@@ -110,21 +110,8 @@
 
 <script type="text/javascript">
 var bots = [];
-/*
-function init() {
-	var callback = function () {
-		getBotList();
-	};
+var url = "https://smu-is429-group-project.appspot.com/_ah/api/rockpaperscissorslizardspock/v2/";
 
-
-	var apisToLoad = 1;
-
-
-	gapi.client.load('rockpaperscissorslizardspock', 'v2', callback, 'https://smu-is429-group-project.appspot.com/_ah/api');
-
-    
-
-}*/
 getBotList();
 document.getElementById('saveBot').onclick = function() {
      play();
@@ -236,9 +223,7 @@ function play() {
 		var lose = 0;
 		var draw = 0;
 		
-		var url= "https://smu-is429-group-project.appspot.com/_ah/api/rockpaperscissorslizardspock/v2/newGame";
-		
-		$.post(url,requestData, function(resp) {
+		$.post(url + "newGame",requestData, function(resp) {
 
 			if(!resp.code) {
 				if(resp.success === false) {
@@ -310,9 +295,7 @@ function next(gameID, r, w,l,d) {
 	var aiMovePic = "";
 	var playerMovePic = "";
 	
-	var url= "https://smu-is429-group-project.appspot.com/_ah/api/rockpaperscissorslizardspock/v2/getNextMove";
-	
-	$.get(url,requestData, function(resp) {
+	$.get(url + "getNextMove",requestData, function(resp) {
 
 	
 
@@ -367,9 +350,8 @@ function next(gameID, r, w,l,d) {
 			console.log("Win: "+win+" Draw: "+draw+" lose: "+lose);
 			//console.log(resp.gameSession.playerBotId);
 			if(resp.gameSession.roundNo == 10) {
-				var url= "https://smu-is429-group-project.appspot.com/_ah/api/rockpaperscissorslizardspock/v2/getBotList";
 	
-				$.get(url, function(resp1) {
+				$.get(url + "getBotList", function(resp1) {
 					if(!resp1.code) {
 						resp1.items = resp1.items || [];
 						console.log(resp1.items);
@@ -383,7 +365,7 @@ function next(gameID, r, w,l,d) {
 					}
 				});
 			
-				$.get(url, function(resp2) {
+				$.get(url + "getBotList", function(resp2) {
 					if(!resp2.code) {
 						resp2.items = resp2.items || [];
 						console.log(resp2.items);
@@ -404,12 +386,10 @@ function next(gameID, r, w,l,d) {
 }
 
 
-
 function getBotList() {
 	console.log("inside list quotes");
-	var url= "https://smu-is429-group-project.appspot.com/_ah/api/rockpaperscissorslizardspock/v2/getBotList";
 	
-	$.get(url, function(respp) {
+	$.get(url + "getBotList", function(respp) {
 		console.log('something');
 		//console.log(respp);
 		console.log('else');
