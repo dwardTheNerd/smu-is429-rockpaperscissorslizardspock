@@ -41,9 +41,9 @@
   js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=1377667399180285";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
-//FB.Event.subscribe('message.send', function(targetUrl) {
- // _gaq.push(['_trackSocial', 'facebook', 'send', targetUrl]);
-//  });
+FB.Event.subscribe('message.send', function(targetUrl) {
+  _gaq.push(['_trackSocial', 'facebook', 'send', targetUrl]);
+  });
 </script>
 
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
