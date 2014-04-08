@@ -355,6 +355,58 @@ public class RockPaperScissorsLizardSpock {
 
   }
 
+  @ApiMethod(name="getBotById", path="getBotById")
+  public Response getBotById(@Named("botId") int botId) {
+
+    RockPaperScissorsLizardSpockDAO gameDAO = null;
+    Response response = null;
+
+    try {
+
+      gameDAO = new RockPaperScissorsLizardSpockDAO();
+      Bot bot = gameDAO.getBot(botId);
+
+      response = new Response();
+      response.setSuccess(true);
+      response.setBot(bot);
+      return response;
+
+    } catch(SQLException ex) {
+
+      response = new Response();
+      response.setSuccess(false);
+      response.setMessage(ex.getMessage());
+      return response;
+
+    } catch(Exception ex) {
+
+      response = new Response();
+      response.setSuccess(false);
+      response.setMessage(ex.getMessage());
+      return response;
+
+    } finally {
+
+      if(gameDAO != null) {
+
+        try {
+          gameDAO.close();
+          gameDAO = null;
+        } catch(SQLException ex) {
+          
+          response = new Response();
+          response.setSuccess(false);
+          response.setMessage(ex.getMessage());
+          return response;
+          
+        }
+
+      }
+
+    }
+
+  }
+
   // Retrieve list of bots that player can select
   // to pit against his bot
   @ApiMethod(name="getBotList", path="getBotList")

@@ -238,7 +238,7 @@ public class RockPaperScissorsLizardSpockDAO {
     return bots;
 
   }
-  
+
   public void insertRound(String id, int playerBotId, int aiBotId, int roundNo, Move playerMove, Move aiMove, int score) throws SQLException {
 
     // Creating a new game is basically just inserting the very first round of

@@ -55,7 +55,6 @@
 </div>
 
 <script>
-	var bots = [];
 	var url = "https://smu-is429-group-project.appspot.com/_ah/api/rockpaperscissorslizardspock/v2/";
 	var userId = {};
 	userId.userId = document.getElementById('userid').value;
@@ -84,18 +83,8 @@
 				console.log(resp.items);
 				for (var i=0; i<resp.items.length;i++){
 					result += "<option value ='"+resp.items[i].id+"'>"+resp.items[i].name+"</option>";
-					temp = [];
-					temp.push(resp.items[i].id);
-					temp.push(resp.items[i].name);
-					temp.push(resp.items[i].code);
-					temp.push(resp.items[i].language);
-					temp.push(resp.items[i].level);
-					temp.push(resp.items[i].winCount);
-					temp.push(resp.items[i].drawCount);
-					temp.push(resp.items[i].lossCount);
-					temp.push(resp.items[i].elo);
-					bots.push(temp);
 				}
+
 				document.getElementById('bot').innerHTML = result;
 			}
 		
@@ -116,13 +105,6 @@
 				for (var i=0;i<respp.items.length;i++) {
 					console.log("loop");
 					result = result+"<option value='"+respp.items[i].id+"'>"+respp.items[i].name + "</option>";
-					temp = [];
-					temp.push(respp.items[i].id);
-					temp.push(respp.items[i].winCount);
-					temp.push(respp.items[i].drawCount);
-					temp.push(respp.items[i].lossCount);
-					temp.push(respp.items[i].elo);
-					bots.push(temp);
 				}
 				document.getElementById('validateSelect').innerHTML = result;
 			}
@@ -325,43 +307,54 @@
 
 	}
 	$('#bot').change(function() {
+
 		if($(this).val() === "select") {
 			document.getElementById('header').innerHTML = "Select a bot to see its statistics!";
 			document.getElementById("canvas").style.display="none";
 			document.getElementById('rating').style.display="none";
 		} else {
-			for (var i=0; i < bots.length; i++) {
-				if(bots[i][0] === parseInt($(this).val())){
-					document.getElementById('header').innerHTML = bots[i][1];
-					document.getElementById('rating').style.display="block";
-					document.getElementById('rating').innerHTML = "Bot Rating: " + bots[i][8];
-					
-					var table = "<table><tr><td>Language: </td><td>"+bots[i][3]+"</td></tr><tr><td>Code:<br></td><td><textarea readonly rows='4'>"+bots[i][2].replace(/\\n/g,"&#013;&#010;").replace(/\\/g, "")+"</textarea></td></tr></table>";
-					document.getElementById('codes').innerHTML = table;
-					
-					var d = [bots[i][5],bots[i][6],bots[i][7]];
-					
-					if(bots[i][5] === 0 && bots[i][6] === 0 && bots[i][7] === 0) {
-						document.getElementById("header").innerHTML = bots[i][1] + " has not been challenged!";
-						break;
-					} else {
-						var barChartData = {
-							labels : ["Win","Draw","Lose"],
-							datasets : [
-								{
-									fillColor : "rgba(220,220,220,0.5)",
-									strokeColor : "rgba(220,220,220,1)",
-									data : d
-								}
-							]
-						}
 
-						var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Bar(barChartData);
-						document.getElementById("canvas").style.display="block";
-						break;
-					}
+			var requestData = {};
+			requestData.botId = parseInt($(this).val());
+
+			$.get(url + "getBotById", requestData, function(resp) {
+
+				if(resp.success == true) {
+
+					document.getElementById('header').innerHTML = resp.bot.name;
+					document.getElementById('rating').style.display="block";
+					document.getElementById('rating').innerHTML = "Bot Rating: " + resp.bot.elo;
+
+					var table = "<table><tr><td>Language: </td><td>"+resp.bot.language+"</td></tr><tr><td>Code:<br></td><td><textarea readonly rows='4'>"+resp.bot.code.replace(/\\n/g,"&#013;&#010;").replace(/\\/g, "")+"</textarea></td></tr></table>";
+          document.getElementById('codes').innerHTML = table;
+
+          var d = [resp.bot.winCount,resp.bot.drawCount,resp.bot.lossCount];
+
+          if(resp.bot.winCount === 0 && resp.bot.lossCount === 0 && resp.bot.drawCount === 0) {
+          	document.getElementById("header").innerHTML = resp.bot.name + " has not been challenged!";
+          } else {
+
+          	var barChartData = {
+          		labels : ["Win","Draw","Lose"],
+          		datasets : [
+          			{
+          				fillColor : "rgba(220,220,220,0.5)",
+                  strokeColor : "rgba(220,220,220,1)",
+                  data : d
+          			}
+          		]
+          	};
+
+        		var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Bar(barChartData);
+        		document.getElementById("canvas").style.display="block";
+
+          }
+
 				}
-			}
+
+			});
+
+			
 		}
 	});
 	
