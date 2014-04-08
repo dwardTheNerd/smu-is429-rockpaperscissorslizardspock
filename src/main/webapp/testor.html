@@ -34,9 +34,10 @@
     
     
     <script type="text/javascript">
+	var ROOT = 'https://smu-is429-group-project.appspot.com/_ah/api';
         function init() {
                 //Parameters are APIName,APIVersion,CallBack function,API Root 
-                gapi.client.load('rockpaperscissorslizardspock', 'v1', null, 'https://smu-is429-group-project.appspot.com/_ah/api');
+                gapi.client.load('rockpaperscissorslizardspock', 'v2', null, ROOT);
                 
                 document.getElementById('listQuote').onclick = function() {
                     listQuotes();
@@ -58,8 +59,8 @@
         //List Quotes function that will execute the listQuote call
         function listQuotes() {
 			console.log("inside list quotes");
-                gapi.client.rockpaperscissorslizardspock.rockPaperScissorsLizardSpock.getBotList().execute(function(resp) {
-					console.log("not working");
+                gapi.client.rockpaperscissorslizardspock.getBotList().execute(function(resp) {
+					console.log("response: "+resp.code);
                         if (!resp.code) {
                                 resp.items = resp.items || [];
                                 var result = "";

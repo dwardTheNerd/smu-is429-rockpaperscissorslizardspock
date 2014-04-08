@@ -47,7 +47,7 @@
 									<label class="control-label" for="validateSelect">Select Bot to play against!</label>
 									<div class="controls">
 										<select id="validateSelect" name="validateSelect">
-											<option value="">Loading Bots...</option>
+											<option value="">Select...</option>
 										</select>
 									</div>
 								</div>
@@ -117,8 +117,8 @@ function init() {
 		getBotList();
 	};
 
-	//var apisToLoad = 1;
-	gapi.client.load('rockpaperscissorslizardspock', 'v1', callback, 'https://smu-is429-group-project.appspot.com/_ah/api');
+	var apisToLoad = 1;
+	gapi.client.load('rockpaperscissorslizardspock', 'v2', callback, 'https://smu-is429-group-project.appspot.com/_ah/api');
 
     document.getElementById('saveBot').onclick = function() {
             play();
@@ -388,27 +388,28 @@ function next(gameID, r, w,l,d) {
 
 }
 
-function getResult(gameID){
-	
-}
+
 
 function getBotList() {
 	console.log("inside list quotes");
-	gapi.client.rockpaperscissorslizardspock.getBotList().execute(function(resp) {
-		console.log(resp);
-		if (!resp.code) {
-			resp.items = resp.items || [];
-			console.log(resp.items);
+	gapi.client.rockpaperscissorslizardspock.getBotList().execute(function(respp) {
+		console.log('something');
+		//console.log(respp);
+		console.log('else');
+		console.log(respp);
+		if (!respp.code) {
+			respp.items = respp.items || [];
+			console.log(respp.items);
 			var result = "<option value='select'>Select...</option>";
-			for (var i=0;i<resp.items.length;i++) {
+			for (var i=0;i<respp.items.length;i++) {
 				console.log("loop");
-				result = result+"<option value='"+resp.items[i].id+"'>"+resp.items[i].name + "</option>";
+				result = result+"<option value='"+respp.items[i].id+"'>"+respp.items[i].name + "</option>";
 				temp = [];
-				temp.push(resp.items[i].id);
-				temp.push(resp.items[i].winCount);
-				temp.push(resp.items[i].drawCount);
-				temp.push(resp.items[i].lossCount);
-				temp.push(resp.items[i].elo);
+				temp.push(respp.items[i].id);
+				temp.push(respp.items[i].winCount);
+				temp.push(respp.items[i].drawCount);
+				temp.push(respp.items[i].lossCount);
+				temp.push(respp.items[i].elo);
 				bots.push(temp);
 			}
 			document.getElementById('validateSelect').innerHTML = result;
