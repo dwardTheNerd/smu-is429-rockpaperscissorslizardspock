@@ -336,7 +336,7 @@
 					document.getElementById('rating').style.display="block";
 					document.getElementById('rating').innerHTML = "Bot Rating: " + bots[i][8];
 					
-					var table = "<table><tr><td>Language: </td><td>"+bots[i][3]+"</td></tr><tr><td>Code:<br></td><td><textarea rows='4'>"+bots[i][2].replace(/\\n/g,"&#013;&#010;")+"</textarea></td></tr></table>";
+					var table = "<table><tr><td>Language: </td><td>"+bots[i][3]+"</td></tr><tr><td>Code:<br></td><td><textarea readonly rows='4'>"+bots[i][2].replace(/\\n/g,"&#013;&#010;").replace(/\\/g, "")+"</textarea></td></tr></table>";
 					document.getElementById('codes').innerHTML = table;
 					
 					var d = [bots[i][5],bots[i][6],bots[i][7]];
