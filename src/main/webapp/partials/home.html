@@ -359,34 +359,37 @@ function next(gameID, r, w,l,d) {
 			}
 			console.log("Win: "+win+" Draw: "+draw+" lose: "+lose);
 			//console.log(resp.gameSession.playerBotId);
-			
-			gapi.client.rockpaperscissorslizardspock.getBotList().execute(function(resp1) {
-				if(!resp1.code) {
-					resp1.items = resp1.items || [];
-					console.log(resp1.items);
-					for (var i=0; i<resp1.items.length;i++){
-						if(resp1.items[i].id === resp.gameSession.playerBotId) {
-							result = result + "Your bot rating: " + resp1.items[i].elo + "<br/>";
-							break;
+			if(resp.gameSession.roundNo == 10) {
+				var url= "https://smu-is429-group-project.appspot.com/_ah/api/rockpaperscissorslizardspock/v2/getBotList";
+	
+				$.get(url, function(resp1) {
+					if(!resp1.code) {
+						resp1.items = resp1.items || [];
+						console.log(resp1.items);
+						for (var i=0; i<resp1.items.length;i++){
+							if(resp1.items[i].id === resp.gameSession.playerBotId) {
+								result = result + "Your bot rating: " + resp1.items[i].elo + "<br/>";
+								break;
+							}
 						}
+						document.getElementById('whoWin').innerHTML = result;
 					}
-					document.getElementById('whoWin').innerHTML = result;
-				}
-			});
+				});
 			
-			gapi.client.rockpaperscissorslizardspock.getBotList().execute(function(resp2) {
-				if(!resp2.code) {
-					resp2.items = resp2.items || [];
-					console.log(resp2.items);
-					for (var i=0; i<resp2.items.length;i++){
-						if(resp2.items[i].id === resp.gameSession.aiBotId) {
-							result = result + resp2.items[i].name + " rating: " + resp2.items[i].elo + "<br/>";
-							break;
+				$.get(url, (function(resp2) {
+					if(!resp2.code) {
+						resp2.items = resp2.items || [];
+						console.log(resp2.items);
+						for (var i=0; i<resp2.items.length;i++){
+							if(resp2.items[i].id === resp.gameSession.aiBotId) {
+								result = result + resp2.items[i].name + " rating: " + resp2.items[i].elo + "<br/>";
+								break;
+							}
 						}
+						document.getElementById('whoWin').innerHTML = result;
 					}
-					document.getElementById('whoWin').innerHTML = result;
-				}
-			});
+				});
+			}
 		}
 
 	});

@@ -18,7 +18,17 @@
 						<div id="codes">
 							
 						</div>
+						<label class="control-label" for="validateSelect">Select Bot to play against!</label>
+						<div class="controls">
+							<select id="validateSelect" name="validateSelect">
+								<option value="">Loading Bots...</option>
+							</select>
+						</div>
+						<input id="saveBot" type="submit" value="Play" class="btn btn-danger btn">
 					</div>
+					
+						
+						
 				</div>
 			</div>
 			
@@ -26,11 +36,12 @@
 				<div class="widget stacker">
 					<div class="widget-header">
 						<i class="icon-signal"></i>
-						<h3>Statistic</h3>
+						<h3>Arena</h3>
 					</div>
 					
 					<div class="widget-content">
-						<div align="center">
+						<div align="center" id ="whoWin">
+							<br>
 							<h4><label id="header">Select a bot to see its statistics!</label></h4>
 							<canvas id="canvas" height="300" width="400" style="display: none"></canvas>
 							<br/>
@@ -48,21 +59,25 @@
 	var userId = {};
 	userId.userId = document.getElementById('userid').value;
 	
-	/*function init() {
-		var callback = function() {
-			getBotsByUser();
-		};
+
+			getBotList();
 		
-		gapi.client.load('rockpaperscissorslizardspock', 'v1', callback, 'https://smu-is429-group-project.appspot.com/_ah/api');
-	}*/
+
+	    document.getElementById('saveBot').onclick = function() {
+	            play();
+	    }
+
+	
 	var url = "https://smu-is429-group-project.appspot.com/_ah/api/rockpaperscissorslizardspock/v2/getBotsByUser?userId="+document.getElementById('userid').value;
 	//console.log(url);
 	$.get(url,function(data,status){
 		//console.log(data);
 		//alert("Data: " + data + "\nStatus: " + status);
+		console.log("IS IT RUNNING?");
 		getBotsByUser(data);
 	});
 	function getBotsByUser(resp) {
+		console.log("error here?");
 		//gapi.client.rockpaperscissorslizardspock.getBotsByUser(userId).execute(function(resp) {
 			if(!resp.code) {
 				var result = "<option value='select'>Select...</option>";
@@ -87,6 +102,236 @@
 		//});
 	}
 	
+	function getBotList() {
+		console.log("inside list quotes");
+		var url= "https://smu-is429-group-project.appspot.com/_ah/api/rockpaperscissorslizardspock/v2/getBotList";
+	
+		$.get(url, function(respp) {
+			console.log('something');
+			//console.log(respp);
+			console.log('else');
+			console.log(respp);
+			if (!respp.code) {
+				respp.items = respp.items || [];
+				console.log(respp.items);
+				var result = "<option value='select'>Bots loaded.</option>";
+				for (var i=0;i<respp.items.length;i++) {
+					console.log("loop");
+					result = result+"<option value='"+respp.items[i].id+"'>"+respp.items[i].name + "</option>";
+					temp = [];
+					temp.push(respp.items[i].id);
+					temp.push(respp.items[i].winCount);
+					temp.push(respp.items[i].drawCount);
+					temp.push(respp.items[i].lossCount);
+					temp.push(respp.items[i].elo);
+					bots.push(temp);
+				}
+				document.getElementById('validateSelect').innerHTML = result;
+			}
+		});
+	}
+	function play() {
+		var botDDL = document.getElementById('validateSelect');
+		
+		if(botDDL.options[botDDL.selectedIndex].value === "select") {
+			alert('Please select a bot to play against with!');
+		} else {
+			if(document.getElementById("canvas") != null) {
+				document.getElementById("canvas").style.display="none";
+			}
+			if(document.getElementById("rating") != null) {
+				document.getElementById('rating').style.display="none";
+			}
+			
+			if(document.getElementById("header") != null) {
+				document.getElementById("header").style.display="none";
+			}
+			console.log('what line is this');
+			var _BotID = document.getElementById('validateSelect').value;
+			var _AiBotId = document.getElementById('bot').value;
+			var result = "";
+			console.log('aibotid: '+ _AiBotId +' Playerbot: '+ _BotID);
+			var requestData = {};
+			requestData.playerBotId = _BotID;
+			requestData.aiBotId = _AiBotId;
+			
+			var rock = "<img src = '../img/hands/rock.png' height='70' width='70'>";
+			var paper = "<img src = '../img/hands/paper.png' height='70' width='70'>";
+			var scissors = "<img src = '../img/hands/scissors.png' height='70' width='70'>";
+			var lizard = "<img src = '../img/hands/lizard.png' height='70' width='70'>";
+			var spock = "<img src = '../img/hands/spock.png' height='70' width='70'>";
+			var aiMovePic = "";
+			var playerMovePic = "";
+			var winner = "You lose.";
+			var win = 0;
+			var lose = 0;
+			var draw = 0;
+		
+			var url= "https://smu-is429-group-project.appspot.com/_ah/api/rockpaperscissorslizardspock/v2/createNewGameWithExistingBots";
+		
+			$.post(url,requestData, function(resp) {
+
+				if(!resp.code) {
+					if(resp.success === false) {
+						alert('Your codes have error. Please try again!');
+					} else {
+						var gameID = resp.gameSession.id;
+						console.log("Received first round");
+						console.log(gameID);
+						if(parseInt(resp.gameSession.score) === 0){
+							winner = "Draw Game.";
+							draw++;
+						}else if(parseInt(resp.gameSession.score) === 1){
+							winner = "You win!";
+							win++;
+						}else{
+							lose++;
+						}
+					
+						if(resp.gameSession.playerMove == 'LIZARD'){
+							playerMovePic = lizard;
+						}else if(resp.gameSession.playerMove == 'ROCK'){
+							playerMovePic = rock;
+						}else if(resp.gameSession.playerMove == 'SCISSORS'){
+							playerMovePic = scissors;
+						}else if(resp.gameSession.playerMove == 'PAPER'){
+							playerMovePic = paper;
+						}else if(resp.gameSession.playerMove == 'SPOCK'){
+							playerMovePic = spock;
+						}
+					
+						if(resp.gameSession.aiMove == 'LIZARD'){
+							aiMovePic = lizard;
+						}else if(resp.gameSession.aiMove == 'ROCK'){
+							aiMovePic = rock;
+						}else if(resp.gameSession.aiMove == 'SCISSORS'){
+							aiMovePic = scissors;
+						}else if(resp.gameSession.aiMove == 'PAPER'){
+							aiMovePic = paper;
+						}else if(resp.gameSession.aiMove == 'SPOCK'){
+							aiMovePic = spock;
+						}
+					
+						result = result + "Round no: "+resp.gameSession.roundNo+ " <br> " +playerMovePic+ " vs "+aiMovePic +" <br> "+winner + "<br>";
+						console.log(result);
+						document.getElementById('whoWin').innerHTML = result
+						console.log("start recursion");
+						next(gameID, result, win, lose, draw);
+						console.log("end recursion");
+					}
+				}
+
+			});
+		}
+	}
+
+	function next(gameID, r, w,l,d) {
+		console.log("in next");
+		var requestData = {};
+		requestData.gameID = gameID;
+		var winner = "You lose.";
+		var result = r;
+		var win = w;
+		var lose = l;
+		var draw = d;
+		var rock = "<img src = '../img/hands/rock.png' height='70' width='70'/>";
+		var paper = "<img src = '../img/hands/paper.png' height='70' width='70'/>";
+		var scissors = "<img src = '../img/hands/scissors.png' height='70' width='70'/>";
+		var lizard = "<img src = '../img/hands/lizard.png' height='70' width='70'/>";
+		var spock = "<img src = '../img/hands/spock.png' height='70' width='70'/>";
+		var aiMovePic = "";
+		var playerMovePic = "";
+		console.log("url next");
+		var url= "https://smu-is429-group-project.appspot.com/_ah/api/rockpaperscissorslizardspock/v2/getNextMove";
+		console.log(url);
+		$.get(url, requestData, function(resp) {
+
+	
+
+			if(!resp.code) {
+				if(parseInt(resp.gameSession.score) === 0){
+					winner = "Draw Game.";
+					draw++;
+				}else if(parseInt(resp.gameSession.score) === 1){
+					winner = "You win!";
+					win++;
+				}else{
+					lose++;
+				}
+			
+				if(resp.gameSession.playerMove == 'LIZARD'){
+					playerMovePic = lizard;
+				}else if(resp.gameSession.playerMove == 'ROCK'){
+					playerMovePic = rock;
+				}else if(resp.gameSession.playerMove == 'SCISSORS'){
+					playerMovePic = scissors;
+				}else if(resp.gameSession.playerMove == 'PAPER'){
+					playerMovePic = paper;
+				}else if(resp.gameSession.playerMove == 'SPOCK'){
+					playerMovePic = spock;
+				}
+			
+				if(resp.gameSession.aiMove == 'LIZARD'){
+					aiMovePic = lizard;
+				}else if(resp.gameSession.aiMove == 'ROCK'){
+					aiMovePic = rock;
+				}else if(resp.gameSession.aiMove == 'SCISSORS'){
+					aiMovePic = scissors;
+				}else if(resp.gameSession.aiMove == 'PAPER'){
+					aiMovePic = paper;
+				}else if(resp.gameSession.aiMove == 'SPOCK'){
+					aiMovePic = spock;
+				}
+				result = result + "Round no: "+resp.gameSession.roundNo+ " <br> " +playerMovePic+ " vs "+aiMovePic +" <br> "+winner + "<br>";
+			
+				document.getElementById('whoWin').innerHTML = result;
+				console.log(resp);
+			
+				// Use recursion instead of a loop to keep on calling next() until
+				// the requirements have been reached then we stop the recursion
+				if(resp.gameSession.roundNo != 10) {
+					next(gameID, result,win,lose,draw);
+				
+				}
+				console.log("Win: "+win+" Draw: "+draw+" lose: "+lose);
+				//console.log(resp.gameSession.playerBotId);
+			
+				if(resp.gameSession.roundNo == 10) {
+					var url= "https://smu-is429-group-project.appspot.com/_ah/api/rockpaperscissorslizardspock/v2/getBotList";
+	
+					$.get(url, function(resp1) {
+						if(!resp1.code) {
+							resp1.items = resp1.items || [];
+							console.log(resp1.items);
+							for (var i=0; i<resp1.items.length;i++){
+								if(resp1.items[i].id === resp.gameSession.playerBotId) {
+									result = result + "Your bot rating: " + resp1.items[i].elo + "<br/>";
+									break;
+								}
+							}
+							document.getElementById('whoWin').innerHTML = result;
+						}
+					});
+			
+					$.get(url, function(resp2) {
+						if(!resp2.code) {
+							resp2.items = resp2.items || [];
+							console.log(resp2.items);
+							for (var i=0; i<resp2.items.length;i++){
+								if(resp2.items[i].id === resp.gameSession.aiBotId) {
+									result = result + resp2.items[i].name + " rating: " + resp2.items[i].elo + "<br/>";
+									break;
+								}
+							}
+							document.getElementById('whoWin').innerHTML = result;
+						}
+					});
+				}
+			}
+
+		});
+
+	}
 	$('#bot').change(function() {
 		if($(this).val() === "select") {
 			document.getElementById('header').innerHTML = "Select a bot to see its statistics!";
@@ -99,7 +344,7 @@
 					document.getElementById('rating').style.display="block";
 					document.getElementById('rating').innerHTML = "Bot Rating: " + bots[i][8];
 					
-					var table = "<table><tr><td>Language: </td><td>"+bots[i][3]+"</td></tr><tr><td>Code:</td><td><textarea rows='4'>"+bots[i][2].replace("\\n","&#10;")+"</textarea></td></tr></table>";
+					var table = "<table><tr><td>Language: </td><td>"+bots[i][3]+"</td></tr><tr><td>Code:<br></td><td><textarea rows='4'>"+bots[i][2].replace("\\n","&#10;")+"</textarea></td></tr></table>";
 					document.getElementById('codes').innerHTML = table;
 					
 					var d = [bots[i][5],bots[i][6],bots[i][7]];
@@ -128,10 +373,16 @@
 		}
 	});
 	
+	
+	
 	(function() {
 	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
 	po.src = 'https://apis.google.com/js/plusone.js?onload=onLoadCallback';
 	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
 	})();
+	
+	
+	
+	
 </script>
 <script src="https://apis.google.com/js/client.js?onload=init"></script>
