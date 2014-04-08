@@ -312,7 +312,7 @@ function next(gameID, r, w,l,d) {
 	
 	var url= "https://smu-is429-group-project.appspot.com/_ah/api/rockpaperscissorslizardspock/v2/getNextMove";
 	
-	$.post(url,requestData, function(resp) {
+	$.get(url,requestData, function(resp) {
 
 	
 
@@ -358,9 +358,12 @@ function next(gameID, r, w,l,d) {
 			// Use recursion instead of a loop to keep on calling next() until
 			// the requirements have been reached then we stop the recursion
 			if(resp.gameSession.roundNo != 10) {
+				console.log("recursiving");
+				console.log(resp.gameSession.roundNo);
 				next(gameID, result,win,lose,draw);
 				
 			}
+			
 			console.log("Win: "+win+" Draw: "+draw+" lose: "+lose);
 			//console.log(resp.gameSession.playerBotId);
 			if(resp.gameSession.roundNo == 10) {
