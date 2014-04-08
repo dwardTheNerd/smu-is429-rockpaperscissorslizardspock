@@ -41,16 +41,20 @@
 <script>
 	var topTenBots = [];
 	
-	function init() {
+	/*function init() {
 		var callback = function() {
 			getTopTenBots();
 		};
 		
 		gapi.client.load('rockpaperscissorslizardspock', 'v1', callback, 'https://smu-is429-group-project.appspot.com/_ah/api');
-	}
-	
-	function getTopTenBots() {
-		gapi.client.rockpaperscissorslizardspock.getTopTenBots().execute(function(resp) {
+	}*/
+	$.get("https://smu-is429-group-project.appspot.com/_ah/api/rockpaperscissorslizardspock/v2/getTopTenBots",function(data,status){
+		//console.log(data);
+		//alert("Data: " + data + "\nStatus: " + status);
+		getTopTenBots(data);
+	});
+	function getTopTenBots(resp) {
+		//gapi.client.rockpaperscissorslizardspock.getTopTenBots().execute(function(resp) {
 			if(!resp.code) {
 				var result = "";
 				resp.items = resp.items || [];
@@ -70,7 +74,7 @@
 				}
 				document.getElementById('topTenBots').innerHTML = result;
 			}
-		});
+		//});
 	}
 	
 	function showStats(id) {

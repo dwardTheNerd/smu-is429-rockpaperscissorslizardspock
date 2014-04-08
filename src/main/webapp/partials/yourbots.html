@@ -48,16 +48,22 @@
 	var userId = {};
 	userId.userId = document.getElementById('userid').value;
 	
-	function init() {
+	/*function init() {
 		var callback = function() {
 			getBotsByUser();
 		};
 		
 		gapi.client.load('rockpaperscissorslizardspock', 'v1', callback, 'https://smu-is429-group-project.appspot.com/_ah/api');
-	}
-	
-	function getBotsByUser() {
-		gapi.client.rockpaperscissorslizardspock.getBotsByUser(userId).execute(function(resp) {
+	}*/
+	var url = "https://smu-is429-group-project.appspot.com/_ah/api/rockpaperscissorslizardspock/v2/getBotsByUser?userId="+document.getElementById('userid').value;
+	//console.log(url);
+	$.get(url,function(data,status){
+		//console.log(data);
+		//alert("Data: " + data + "\nStatus: " + status);
+		getBotsByUser(data);
+	});
+	function getBotsByUser(resp) {
+		//gapi.client.rockpaperscissorslizardspock.getBotsByUser(userId).execute(function(resp) {
 			if(!resp.code) {
 				var result = "<option value='select'>Select...</option>";
 				resp.items = resp.items || [];
@@ -78,7 +84,7 @@
 				}
 				document.getElementById('bot').innerHTML = result;
 			}
-		});
+		//});
 	}
 	
 	$('#bot').change(function() {
