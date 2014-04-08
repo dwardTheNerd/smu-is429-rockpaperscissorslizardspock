@@ -273,32 +273,41 @@
 			
 				if(resp.gameSession.roundNo == 10) {
 	
-					$.get(url + "getBotList", function(resp1) {
-						if(!resp1.code) {
-							resp1.items = resp1.items || [];
-							console.log(resp1.items);
-							for (var i=0; i<resp1.items.length;i++){
-								if(resp1.items[i].id === resp.gameSession.playerBotId) {
-									result = result + "Your bot rating: " + resp1.items[i].elo + "<br/>";
-									break;
-								}
+					var requestData1 = {};
+					requestData1.botId = resp.gameSession.playerBotId;
+
+					$.get(url + "getBotById", requestData1, function(resp1) {
+
+						if(resp1) {
+
+							if(resp1.success == true) {
+
+								result = result + "Your bot rating: " + resp1.bot.elo + "<br/>";
+								document.getElementById('whoWin').innerHTML = result;
+
 							}
-							document.getElementById('whoWin').innerHTML = result;
+
 						}
+
 					});
 			
-					$.get(url + "getBotList", function(resp2) {
-						if(!resp2.code) {
-							resp2.items = resp2.items || [];
-							console.log(resp2.items);
-							for (var i=0; i<resp2.items.length;i++){
-								if(resp2.items[i].id === resp.gameSession.aiBotId) {
-									result = result + resp2.items[i].name + " rating: " + resp2.items[i].elo + "<br/>";
-									break;
-								}
+					var requestData2 = {};
+					requestData2.botId = resp.gameSession.aiBotId;
+
+					$.get(url + "getBotById", requestData2, function(resp2) {
+
+						if(resp2) {
+
+							if(resp2.success == true) {
+
+								result = result + resp2.bot.name + " rating: " + resp2.bot.elo + "<br/>";
+
 							}
+
 							document.getElementById('whoWin').innerHTML = result;
+
 						}
+
 					});
 				}
 			}
