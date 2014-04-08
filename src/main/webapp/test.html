@@ -39,14 +39,23 @@
       requestData.playerBotCode = code;
       requestData.aiBotId = aiBotId;
       requestData.language = language;
+      requestData.userId = "edward";
 
       gapi.client.rockpaperscissorslizardspock.newGame(requestData).execute(function(resp) {
 
         if(!resp.code) {
 
-          var gameID = resp.gameSession.id;
-          console.log("Received first round");
-          next(gameID);
+          if(typeof resp.gameSession === "undefined") {
+
+            console.log(resp.message);
+
+          } else {
+
+            var gameID = resp.gameSession.id;
+            console.log("Received first round");
+            next(gameID);
+
+          }
 
         }
 

@@ -14,6 +14,7 @@ import java.net.URLEncoder;
 import java.util.UUID;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import org.apache.commons.codec.binary.Base64;
 
 @Api(description = "API for RockPaperScissorsLizardSpock game", name = "rockpaperscissorslizardspock", version = "v1")
 public class RockPaperScissorsLizardSpock {
@@ -32,9 +33,6 @@ public class RockPaperScissorsLizardSpock {
   // Start a new game with new bot
   @ApiMethod(name="newGame", path="newGame")
   public Response newGame(@Named("playerBotName") String playerBotName, @Named("playerBotCode") String playerBot, @Named("aiBotId") int aiBotId, @Named("language") Language language, @Named("userId") String userId) {
-
-    // Need to decode code first before we can process it
-    playerBot = URLDecoder.decode(playerBot);
 
     RockPaperScissorsLizardSpockDAO gameDAO = null;
 
@@ -588,7 +586,7 @@ public class RockPaperScissorsLizardSpock {
   private Move runCode(String code, Language language, ArrayList<Move>opponentMoveHistory) throws SQLException, Exception {
 
     String urlString = "http://162.222.183.53/";
-    String parameters = "jsonrequest=";
+    String parameters = "";
     String tests = "";
 
     String opponentMoveHistoryString = "[]";
@@ -603,38 +601,33 @@ public class RockPaperScissorsLizardSpock {
 
       urlString += "python";
       tests = ">>> play_game(" + opponentMoveHistoryString + ")\\n'ANYTHING'";
-      parameters += "{\"tests\":\""+ tests +"\",\"solution\":\"" + code + "\"}";
+      parameters = "{\"tests\":\""+ tests +"\",\"solution\":\"" + code + "\"}";
 
     } else if(language == Language.RUBY) {
 
       urlString += "ruby";
       tests = "assert_equal('ANYTHING',play_game(" + opponentMoveHistoryString + "))";
-      parameters += "{\"tests\":\""+ tests +"\",\"solution\":\"" + code + "\"}";
+      parameters = "{\"tests\":\""+ tests +"\",\"solution\":\"" + code + "\"}";
 
     } else {   // Any other language values we default to javascript
 
       urlString += "js";
-      tests = "assert_equal('ANYTHING',playGame(" + opponentMoveHistoryString + "))";
-      parameters += "{\"tests\":\""+ tests +"\",\"solution\":\"" + URLEncoder.encode(code) + "\"}";
+      tests = "assert_equal('ANYTHING',playGame(" + opponentMoveHistoryString + "));";
+      parameters = "{\"tests\":\""+ tests +"\",\"solution\":\"" + code + "\"}";
 
     }
 
-    URL url = new URL(urlString);
+    // Need to base64 encode the parameters to be sent to verifier server
+    // BUT we also need to url encode the base64 encoded parameters to make it
+    // safe to be sent in a URL
+    parameters = "jsonrequest=" + URLEncoder.encode(base64Encode(parameters), "UTF-8");
+
+    URL url = new URL(urlString + "?" + parameters);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
     // Configuring request header
-    conn.setRequestMethod("POST");
-    conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-    conn.setRequestProperty("Content-Length", Integer.toString(parameters.length()));
-
-    // Send post request
-    conn.setDoInput(true);
-    conn.setDoOutput(true);
-    DataOutputStream output = new DataOutputStream(conn.getOutputStream());
-    output.writeBytes(parameters);
-    output.flush();
-    output.close();
+    conn.setRequestMethod("GET");
+    conn.setRequestProperty("User-Agent", "TornadoServer/3.2");
 
     int responseCode = conn.getResponseCode();
     String verifierResponseString;
@@ -700,7 +693,15 @@ public class RockPaperScissorsLizardSpock {
     return moves;
     
   }
-  
+
+  private String base64Encode(String original) {
+
+    byte[] encoded = Base64.encodeBase64(original.getBytes());
+
+    return new String(encoded);
+
+  }
+
   private int calculateRating(double score, int playerBotRating, int aiBotRating) {
     if(playerBotRating > 2400 && aiBotRating > 2400) {
       return playerBotRating + eloFormula(32, score, playerBotRating, aiBotRating);
