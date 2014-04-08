@@ -163,7 +163,7 @@ $('#validateSelect').change(function() {
 });
 
 $('#language').change(function() {
-	var jsCode = "function play_game(history) { \n  return 'YOUR MOVE'; \n}";
+	var jsCode = "function playGame(history) {\n  return 'YOUR MOVE';\n}";
 	var pythonCode = "def play_game(history):\n  return 'YOUR MOVE'";
 	var rubyCode = "def play_game(history)\n  return 'YOUR MOVE'\nend";
 	if($(this).val() === "JAVASCRIPT") {
