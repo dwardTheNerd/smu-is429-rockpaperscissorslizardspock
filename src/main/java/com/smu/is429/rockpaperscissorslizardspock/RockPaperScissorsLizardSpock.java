@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import org.apache.commons.codec.binary.Base64;
 
-@Api(description = "API for RockPaperScissorsLizardSpock game", name = "rockpaperscissorslizardspock", version = "v1")
+@Api(description = "API for RockPaperScissorsLizardSpock game", name = "rockpaperscissorslizardspock", version = "v2")
 public class RockPaperScissorsLizardSpock {
 
   private final int NUMBER_OF_ROUNDS = 10;

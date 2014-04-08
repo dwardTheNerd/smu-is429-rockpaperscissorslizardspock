@@ -12,21 +12,17 @@
 		<div class="widget big-stats-container stacked">
 			<div class="widget-content">
 				Instruction!<br/>
-				This is how to play!<br/>
-				Rock-paper-scissors-lizard-Spock is an expansion of the classic selection method game rock-paper-scissors.
+				Rock-paper-scissors-lizard-Spock is an expansion of the classic selection method game rock-paper-scissors. You must be wondering how to play?
 				<ol>
-					<li>Sign in with your Facebook / Twitter / Google account! If you don't, your bot won't be tagged to you!</li>
+					<li>Sign in with your Facebook/Twitter/Google account! If you don't, your bot won't be tagged to you!</li>
 					<li>Select a bot to play against with.</li>
-					<li>Next, time to code your ultimate bot!</li>
+					<li>Either select your existing bot or code your own bot.</li>
+					<li>If you code your own bot, give your bot the coolest name!</li>
 					<li>Select the language that you want to code in. Either Javascript, Python or Ruby.</li>
-					<li>A sample code will be generated. Make modification to the code to make your bot the strongest bot!</li>
-					<li>An argument, history, is provided for you. If the bot that you are challenging has been challenged before, the history of the bot is given to you.
-					    History is an array. For example, history = ['ROCK','ROCK','ROCK','ROCK','ROCK','ROCK','ROCK','ROCK','ROCK','ROCK']
-						Thus, you can use history to your advantage!
-					</li>
-					<li>Do remember to return your move in this format either 'ROCK' or 'PAPER' or 'SCISSORS' or 'LIZARD' or 'SPOCK'!</li>
+					<li>A sample code will be generated. Make modification to the code to make your bot the strongest!</li>
+					<li>Do not change the method name and arguments, and please return your move in this format either 'ROCK' or 'PAPER' or 'SCISSORS' or 'LIZARD' or 'SPOCK'!</li>
 					<li>Press Play and see your bot in action! :)</li>
-					<li>Remember to share this on Facebook / Twitter / Google!</li>
+					<li>Remember to share this on Facebook/Twitter/Google!</li>
 				</ol>
 			</div>
 		</div>
@@ -117,7 +113,10 @@ function init() {
 		getBotList();
 	};
 
+
 	var apisToLoad = 1;
+
+
 	gapi.client.load('rockpaperscissorslizardspock', 'v2', callback, 'https://smu-is429-group-project.appspot.com/_ah/api');
 
     document.getElementById('saveBot').onclick = function() {
@@ -167,7 +166,7 @@ $('#validateSelect').change(function() {
 });
 
 $('#language').change(function() {
-	var jsCode = "function playGame(history) {\n  return 'YOUR MOVE';\n}";
+	var jsCode = "function play_game(history) { \n  return 'YOUR MOVE'; \n}";
 	var pythonCode = "def play_game(history):\n  return 'YOUR MOVE'";
 	var rubyCode = "def play_game(history)\n  return 'YOUR MOVE'\nend";
 	if($(this).val() === "JAVASCRIPT") {
