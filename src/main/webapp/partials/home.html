@@ -245,7 +245,7 @@ function play() {
 					alert('Your codes have error. Please try again!');
 				} else {
 					var gameID = resp.gameSession.id;
-					console.log("Received first round");
+					
 					if(parseInt(resp.gameSession.score) === 0){
 						winner = "Draw Game.";
 						draw++;
@@ -281,11 +281,11 @@ function play() {
 					}
 					
 					result = result + "Round no: "+resp.gameSession.roundNo+ " <br> " +playerMovePic+ " vs "+aiMovePic +" <br> "+winner + "<br>";
-					console.log(result);
+					
 					document.getElementById('whoWin').innerHTML = result;
-					console.log("start recursion");
+					
 					next(gameID, result, win, lose, draw);
-					console.log("end recursion");
+					
 				}
 			}
 
@@ -351,19 +351,18 @@ function next(gameID, r, w,l,d) {
 			result = result + "Round no: "+resp.gameSession.roundNo+ " <br> " +playerMovePic+ " vs "+aiMovePic +" <br> "+winner + "<br>";
 			
 			document.getElementById('whoWin').innerHTML = result;
-			console.log(resp);
+			
 			
 			// Use recursion instead of a loop to keep on calling next() until
 			// the requirements have been reached then we stop the recursion
 			if(resp.gameSession.roundNo != 10) {
-				console.log("recursiving");
-				console.log(resp.gameSession.roundNo);
+				
 				next(gameID, result,win,lose,draw);
 				
 			}
 			
-			console.log("Win: "+win+" Draw: "+draw+" lose: "+lose);
-			//console.log(resp.gameSession.playerBotId);
+			
+			
 			if(resp.gameSession.roundNo == 10) {
 	
 				var requestData1 = {};
@@ -412,19 +411,17 @@ function next(gameID, r, w,l,d) {
 
 
 function getBotList() {
-	console.log("inside list quotes");
+	
 	
 	$.get(url + "getBotList", function(respp) {
-		console.log('something');
-		//console.log(respp);
-		console.log('else');
-		console.log(respp);
+		
+		
 		if (!respp.code) {
 			respp.items = respp.items || [];
-			console.log(respp.items);
+			
 			var result = "<option value='select'>Bots loaded.</option>";
 			for (var i=0;i<respp.items.length;i++) {
-				console.log("loop");
+				
 				result = result+"<option value='"+respp.items[i].id+"'>"+respp.items[i].name + "</option>";
 			}
 			document.getElementById('validateSelect').innerHTML = result;

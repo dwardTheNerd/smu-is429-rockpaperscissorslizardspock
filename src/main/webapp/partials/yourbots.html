@@ -67,20 +67,17 @@
 	            play();
 	    }
 
-	//console.log(url);
 	$.get(url + "getBotsByUser?userId="+document.getElementById('userid').value, function(data,status){
-		//console.log(data);
-		//alert("Data: " + data + "\nStatus: " + status);
-		console.log("IS IT RUNNING?");
+		
 		getBotsByUser(data);
 	});
 	function getBotsByUser(resp) {
-		console.log("error here?");
+		
 		
 			if(!resp.code) {
 				var result = "<option value='select'>Select...</option>";
 				resp.items = resp.items || [];
-				console.log(resp.items);
+				
 				for (var i=0; i<resp.items.length;i++){
 					result += "<option value ='"+resp.items[i].id+"'>"+resp.items[i].name+"</option>";
 				}
@@ -91,19 +88,16 @@
 	}
 	
 	function getBotList() {
-		console.log("inside list quotes");
+		
 	
 		$.get(url + "getBotList", function(respp) {
-			console.log('something');
-			//console.log(respp);
-			console.log('else');
-			console.log(respp);
+			
 			if (!respp.code) {
 				respp.items = respp.items || [];
-				console.log(respp.items);
+				
 				var result = "<option value='select'>Bots loaded.</option>";
 				for (var i=0;i<respp.items.length;i++) {
-					console.log("loop");
+					
 					result = result+"<option value='"+respp.items[i].id+"'>"+respp.items[i].name + "</option>";
 				}
 				document.getElementById('validateSelect').innerHTML = result;
@@ -126,11 +120,11 @@
 			if(document.getElementById("header") != null) {
 				document.getElementById("header").style.display="none";
 			}
-			console.log('what line is this');
+			
 			var _BotID = document.getElementById('bot').value;
 			var _AiBotId = document.getElementById('validateSelect').value;
 			var result = "";
-			console.log('aibotid: '+ _AiBotId +' Playerbot: '+ _BotID);
+			
 			var requestData = {};
 			requestData.playerBotId = _BotID;
 			requestData.aiBotId = _AiBotId;
@@ -154,8 +148,7 @@
 						alert('Your codes have error. Please try again!');
 					} else {
 						var gameID = resp.gameSession.id;
-						console.log("Received first round");
-						console.log(gameID);
+						
 						if(parseInt(resp.gameSession.score) === 0){
 							winner = "Draw Game.";
 							draw++;
@@ -191,11 +184,11 @@
 						}
 					
 						result = result + "Round no: "+resp.gameSession.roundNo+ " <br> " +playerMovePic+ " vs "+aiMovePic +" <br> "+winner + "<br>";
-						console.log(result);
+						
 						document.getElementById('whoWin').innerHTML = result
-						console.log("start recursion");
+						
 						next(gameID, result, win, lose, draw);
-						console.log("end recursion");
+						
 					}
 				}
 
@@ -204,7 +197,7 @@
 	}
 
 	function next(gameID, r, w,l,d) {
-		console.log("in next");
+		
 		var requestData = {};
 		requestData.gameID = gameID;
 		var winner = "You lose.";
@@ -219,7 +212,7 @@
 		var spock = "<img src = '../img/hands/spock.png' height='70' width='70'/>";
 		var aiMovePic = "";
 		var playerMovePic = "";
-		console.log("url next");
+		
 		
 		$.get(url + "getNextMove", requestData, function(resp) {
 
@@ -260,18 +253,14 @@
 				result = result + "Round no: "+resp.gameSession.roundNo+ " <br> " +playerMovePic+ " vs "+aiMovePic +" <br> "+winner + "<br>";
 			
 				document.getElementById('whoWin').innerHTML = result;
-				console.log(resp);
+			
 			
 				// Use recursion instead of a loop to keep on calling next() until
 				// the requirements have been reached then we stop the recursion
 				if(resp.gameSession.roundNo != 10) {
 					next(gameID, result,win,lose,draw);
 				
-				}
-				console.log("Win: "+win+" Draw: "+draw+" lose: "+lose);
-				//console.log(resp.gameSession.playerBotId);
-			
-				if(resp.gameSession.roundNo == 10) {
+				}else if(resp.gameSession.roundNo == 10) {
 	
 					var requestData1 = {};
 					requestData1.botId = resp.gameSession.playerBotId;
