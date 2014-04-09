@@ -32,7 +32,7 @@ public class Judge {
 
     // Now we look at scissors
     temp = new EnumMap<Move, Integer>(Move.class);
-    temp.put(Move.ROCK, 1);
+    temp.put(Move.ROCK, -1);
     temp.put(Move.PAPER, 1);
     temp.put(Move.SCISSORS, 0);
     temp.put(Move.LIZARD, 1);
